@@ -45,3 +45,14 @@ yes para src directory
 não para app router
 não para import alias
 e a estrutura do projeto agora tem as pages  e esta igual a da rocketseat.
+# file system routing
+roteamento de sistema de arquivos. uma das coisas legais do net é que ele permite isso, o que na pratica é ao criar uma pagina, caso eu queria que uma pagina seja acessivel aousuario pelo endereço /products é so eu criar dentro da pasta pages do meu projeto um arquivo chamado products.
+ou seja todo arquivo criado dentro da pasta pages vira automaticamente uma rota, menos alguns expessifivos como o app que vamos falar mais tarde.
+com isso não precisamos mais de tudo aquilo de configurar o react routerdom e etc.
+porem as rotas precisam de parametro as vezes. por exemplo a gente precisa saber qual produto o usuario clico a gente faz isso com parametros com por exemplo id. então se a gente fizer /products/1 seria um parametro. mas o next não vai entender isso diretamente como um parametro, ele vai passar a procurar por alguma rota que tenha esse endereço. enão quando a gente for trabalhar com arametros vamos ter que configura-los.
+mas outra coisa que podemos fazer tambem é criar subpastas dentro da pages. se a gente criar uma pasta chamada product e dentro dela colocar o arquivo product com o nome de index o endereço vai continuar fucnionando porque a index vai ser a home do product ou seja o / do product, dessa forma se q gente colocar denro dessa mesma pasta uma paginachamada 1 o endereço dela vai ser product/1
+porem o mais legal disso tudo é que o nome desses arquivos podem ser parametrizados. então se a gente trocar  nome do arquivo por colhece [] e dentro do colchete o parametro que a gente queira usar vai funcionar.
+então se eu no lugar de index colocar [id] ele vira uma rota wildcard e todo que vier depois da barra vai cair ali. ai dentro da pagina a gente pode pegar o valor do parametro usando um import do next o useRouter. caso a importação não faça automaticamente a gente vai no ts config e coloca o moduleresolution como sendo node. "moduleResolution": "node",
+
+ai usando o useRouter a gente tem acesso ao nosso use params que estão dentro do objeto chamado query que que vem nesse useRouter.  se a gente mostrar em tela o objeto query no caso do endereço /1 ele vai vir 1 se usar 2 vai vir 2 e por ai vai? então podemos usar esse id que vem da query para buscar um produto especifico de nossa api.
+a pagina id fica assim:
