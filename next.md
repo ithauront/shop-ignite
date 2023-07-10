@@ -83,3 +83,90 @@ export default function document() {
 apos isso e sempre que modificarmos algo no document da aplicação temos que reiniciar o servidor. porque o next so le ele uma vez.
 caso as alterações não se apliquem talvez seja um erro de cash então a gente deleta a pasta .next e roda npm run dev que ele vai recriar a psata .next e e as atualizaçãoes serão feitas. é imoortanten saber qe o document é o indext do nosso projeto e qualquer coido colocado nele vai ser carregado em todas as paginas da aplicação então se quisermso importar algio que não vai estar em todas as paginas vai ter um outro lugar melhor para importar essas coisas, inclusive no arquivo app. o _document.tsx geralmente vai ser o mais simples possivel.
 
+# stiches
+stiches é uma bibliotaca para estilização  que é uma alternativa ao styled components. nos temos que instala-la.
+porem ela tem uma forma de escrever uma estilização um pouco diferente que é melhor para variações de estilos baseadas em propriedades.
+o next e stiches funcionam bem juntos
+npm i @stitches/react
+a gente instala ele com o comando a cima e dpois vamos na pasta src e criamos uma pasta styles e dentro dela um index.ts
+
+la vamos importar a createStitches  e com isso nos podemos criar uma const para configurar algumas coisas dentro da aplicação. e criar variaveis para fazer um theme global. dentro de theme se dermos u
+m cntrl space a gente ve varias coisas que da para configurar. vamos por exemplo mexer nas cores e criar uma cor chamada rocket seat.
+a pagina fica assim:
+import { createStitches } from "@stitches/react";
+
+const config = createStitches({
+    theme: {
+        colors: {
+            rocketseat: '#8257e0',
+        }
+    }
+    
+})
+
+para ter acesso a esse config a gente precisa exportar ele , mas a gente pode fazer isso de formas diferentes. o problema é que existem muitas coisas dentro do config então o melhor jeito é darmos um export const e no lugar de config a gente desestruturar.
+fica assim:
+import { createStitches } from "@stitches/react";
+
+export const {
+    config, styled, css, globalCss, keyframes, getCssText, theme, createTheme,
+} = createStitches({
+    theme: {
+        colors: {
+            rocketseat: '#8257e0',
+        }
+    }
+    
+})
+
+agora quando a gente for usar em algum outrolugar vamos importar essas coisas. por exemplo, vamos fazer um button no index vamos fazer uma const Button = styled (tem que ser o styled que vem de nossa pasta styles)
+por ser uma função vamos abrir parenteses depois do button (diferente do styledcomponents que era um . o stiches por tratar de uncções usa parenteses.) e ai vamos dar dois parametros a essa função, o primeiro vai ser a tag html entre aspas. e o segundo vai ser um objeto com a nossa estilização. para escrever a estilização vamos escrever como se fosse javascript então a sintax tambem vai ser igual javascript. então ao inves de escrever background-color vamos escrever backgroundColor. ai no nosso backgroundColor se a gente der um cntrl espaço ele vai nos mostrar a $rocketseat que é a cor que criamos, mas tem varias outras cores tambem que podemos usar (tem que estar entre aspas). vamos trocar o h1 pelo button para testar a pagina fica assim:
+import { styled } from "../styles"
+
+const Button = styled('button', {
+  backgroundColor: '$rocketseat'
+})
+
+export default function Home() {
+  return (
+   <button>Enviar</button>
+  )
+}
+
+e ai podemos nesse const styled colocar qualquaer outra estilização. um borderRadius por exemplo, por ser numerico não precisamos colocar como string assim '8px' a gente pode botar so 8 que ele vai coverter para pixel. porem se quisermos podemos colocar '8px' tambem.
+assim como o styledcomponents a gente pode fazer encadeamento e tambem com coisas como hover, so prestar atenção nos { } e nas aspas. fica assim:
+
+import { styled } from "../styles"
+
+const Button = styled('button', {
+  backgroundColor: '$rocketseat',
+  borderRadius: '4px',
+  border: 0,
+  padding: '4px 8p',
+
+  span : {
+    fontWeight: 'bold',
+  },
+
+  '&:hover': {
+    filter: 'brightness(0.8)'
+  }
+
+})
+
+export default function Home() {
+  return (
+   <Button>
+    <span>teste</span>
+    Enviar</Button>
+  )
+}
+
+é impostante saber que como o stitches funciona com javascript se a gente estiver com o javasciprt desabilitado, ele não vai funcionar, porque ele aplica o css em runtime, ou seja em tempo de execução o html é renderisado no serverside render, e ele fica armazenado, porem o css é direto no no frontend, então ele é montado a cada vez. podemos mudar para o css ficar direto no servidor next e não so no frontend. na documentação do stiches a gente pode olhar o serverside render e mudar ele ele para ele sempre renderizar com o css no servidor e n éao so no css. temos que ir la no _document, na head a gente vai colocar uma tag styles com id stiches e vamos colocar o dangeroslysetinHTML=({__html: getcsstext()} ) 
+a gente passa para o dangerosly a funçõa gethtmltext que vem do nosso config.
+essa função getcsstext ela vai pegar o css e escrever dentro de uma tag style de html la no head do html.
+fica assim:
+<style id="stitches" dangerouslySetInnerHTML={{__html: getCssText() }} />
+   
+
+
