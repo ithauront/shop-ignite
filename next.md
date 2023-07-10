@@ -55,4 +55,31 @@ porem o mais legal disso tudo é que o nome desses arquivos podem ser parametriz
 então se eu no lugar de index colocar [id] ele vira uma rota wildcard e todo que vier depois da barra vai cair ali. ai dentro da pagina a gente pode pegar o valor do parametro usando um import do next o useRouter. caso a importação não faça automaticamente a gente vai no ts config e coloca o moduleresolution como sendo node. "moduleResolution": "node",
 
 ai usando o useRouter a gente tem acesso ao nosso use params que estão dentro do objeto chamado query que que vem nesse useRouter.  se a gente mostrar em tela o objeto query no caso do endereço /1 ele vai vir 1 se usar 2 vai vir 2 e por ai vai? então podemos usar esse id que vem da query para buscar um produto especifico de nossa api.
-a pagina id fica assim:
+
+vamos agora instalar as fontes. pegamos a fonte no google fonts como sempre.
+no nex nos não temos acesso a aquele index para modificar as coisas base do projeto como a fonte. então para mudar isso a gente tem que criar um docmumento na pages chamado _document.tsx esse arquivo document tambem vai ser um componente ent<éao tambem vamos fazer nele uma export fucntion document.> é importante entender que no next tudo são compponentes inclusive o html da pagina como um todo. e desse document vamos fazer o html da pagina. porem não vamos usar tags tradicionais como o head ou etc. a gente vai importar componentes de dentro de uma biblioteca chamada next/document. vamos importar o Html Head Main e 
+vamos usar o Html importando para ficar em volta de tudo, odentro dele o Head. o body vamos usar a tag original do html porque não tem um pra importar do nextDocument ai dentro do head nos vamos colar as importações de fontes que fizemos. o crossorigin a gente tem que colocar o O em maic=suclo e dar um valor para ele. damos o valor de anonymous.
+dentro do body nos colocamos a tag Main. ele serve para indicar para o next em qual lugar da aplicação vao as conteudos das paginas carregadas sob demanda de acordo com a rota acessada.
+por fim dentro do body colocamos o nexScript que é em qual lugar da pagina a gente vai colocar os scripts da pagina. a ideia é colocar o nextScript no fim da tag body.
+o document fica assim:
+import { Html, Head, Main, NextScript } from "next/document"
+
+export default function document() {
+    return (
+        <Html>
+            <Head>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+         </Head>
+         <body>
+            <Main />
+            <NextScript />
+         </body>
+        </Html>
+    )
+}
+
+apos isso e sempre que modificarmos algo no document da aplicação temos que reiniciar o servidor. porque o next so le ele uma vez.
+caso as alterações não se apliquem talvez seja um erro de cash então a gente deleta a pasta .next e roda npm run dev que ele vai recriar a psata .next e e as atualizaçãoes serão feitas. é imoortanten saber qe o document é o indext do nosso projeto e qualquer coido colocado nele vai ser carregado em todas as paginas da aplicação então se quisermso importar algio que não vai estar em todas as paginas vai ter um outro lugar melhor para importar essas coisas, inclusive no arquivo app. o _document.tsx geralmente vai ser o mais simples possivel.
+
