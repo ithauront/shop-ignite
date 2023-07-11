@@ -168,5 +168,43 @@ essa função getcsstext ela vai pegar o css e escrever dentro de uma tag style 
 fica assim:
 <style id="stitches" dangerouslySetInnerHTML={{__html: getCssText() }} />
    
+   vamos agora fazer um arquivo global.tsx no styles e nele vamos dar os estilos globais. e dela importanmos o globalCss do . atenção nao do stitches. e fazermos nossa const globalstyles e dentro do objeto criamos nossos estilos globais.
+   como o document é o base la que so carrega uma vez q gente não recomenda coocar a chamada do globalStyles nele, e sim do app.
+   o app funciona como um wrapper um container para as paginas de nossa aplicação então ele via ser carregado junto com qualquer pagina de nossa aplicação., o app carrega a pagina atravez do components
+   vamos incluir a tipagem do component no app importando o appProps do next.  e vamos chamar a função globalStyles antes da função. o arquivo app fica assim :
+   import { AppProps } from "next/app";
+import { globalStyles } from "../styles/global";
+
+  globalStyles()
+
+export default function App({ Component, pageProps }:AppProps) {  
+
+  return <Component {...pageProps} />
+}
+
+colocamo o globalStyles fora da função porque se n ão toda a vez que a gente trocar de pagina tudo que esta dentro do app enquanto na verdade o globalstyles não muda então é melhor ele ficar fora.
+
+o arquivo do globalStyles fica assim:
+import { globalCss } from ".";
+
+export const globalStyles = globalCss({
+    '*' : {
+        margin: 0,
+        padding: 0,
+    },
+    body: {
+        backgroundColor: '$gray900',
+        color: '$gray100',
+        '-webkit-font-smoothing': 'antialised'
+    },
+
+    'body, input, textarea, button': {
+        fontFamily: 'Roboto',
+        fontWeight: 400,
+
+    }
+})
+essa é a sintax para escrever estilos no stitches.
+
 
 
