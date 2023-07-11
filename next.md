@@ -206,5 +206,49 @@ export const globalStyles = globalCss({
 })
 essa é a sintax para escrever estilos no stitches.
 
+# cabeçalho da aplicação
+vamos no arquivo app
+dentro do return tudo que a gente escrever vai aparecer em todas as paginas. então ja temos o componente la que é a parte modular da aplicação,; mas se a gente quiser algo fixo a todas as paginas vamos colocar la tambem. ao invz de criar um componente header a gente vai criar a nossa header direto no app.
+ao importar o logo ele deu problema e não aparecia então importamos ele como logo.src
+a gente não cria um componente para o header e nem para os setilos deles pq tudo que a gente colocar na pasta pages vira uma rota da aplicação. então com o next a gente cria as estilizações dentro da pasta styles. la a gente cria uma pagina chamada pages e vamos fazer o nosso header.
+nosso styles pro app fica assim:
+import { styled } from '..';
+
+export const Container = styled('div', {
+display: 'flex',
+flexDirection: 'column',
+alignItens: 'flex-start',
+justifyContent: 'center',
+minHeight: '100vh',
+
+})
+
+export const Header = styled('header', {
+padding: '2rem 0',
+width: '100%',
+maxWidth: 1180,
+margin: '0 auto',
+})
+e a pagina _app.tsx fica assim:
+import { AppProps } from "next/app";
+import { globalStyles } from "../styles/global";
+import logo from '../assets/logo.svg'
+import Image from "next/image";
+import { Container, Header } from "../styles/pages/app";
+
+export default function App({ Component, pageProps }:AppProps) {  
+  globalStyles()
+  return(
+<Container>
+<Header>
+  <Image src={logo.src} alt="" />
+</Header>
+<Component {...pageProps} />
+</Container>
+
+  ) 
+}
+
+isso serviu para visualizar melhor que o app é carregado em todas as paginas. acho que poderiamos criar componentes em outra pasta fora dos pages e colocar esses componentes no app e não ter que criar o header no app.
 
 
