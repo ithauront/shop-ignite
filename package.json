@@ -12,6 +12,7 @@
     "@stitches/react": "^1.2.8",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.9",
+    "keen-slider": "^6.8.6",
     "next": "13.4.9",
     "nodemon": "^3.0.1",
     "react": "18.2.0",

@@ -279,4 +279,48 @@ a gente quer fazer o footer sair um pouco da tela. vamos usar essa propriedade:
         }
         quer dizer que o footer fica armazenado fora da tela e quando a gente faz o hover nele ele vai aparecer para dentro da tela.
 
+# carrossel
+para criar o carrossel vamos usar uma biblioteca chamada keen-slider.
+a gente pode tamber fazer com o radix no futuro.
+vamos instalar o npm i keen-slider
+e ai na pagina que vamos usar vamos importar elementos do keenslider/react e vamos tambem importar um css que vem dessa biblioteca. vai ficar asim as importações
+
+import { useKeenSlider} from 'keen-slider/react'
+
+import 'keen-slider/keen-slider.min.css'
+
+nos vamos entéao fazer uma const para pegar de dentro desse useKeenSlider os slides e q gente quer 3 por pagina visivel ao mesmo tempo então vamos colocar slides: {
+  perView: 3,
+}
+ ele retorna um array então vamos desestruturar esse array e pegar a sliderRef (ref é uma referencia a um elemento da DOM). 
+ fica assim:
+ const [SliderRef] = useKeenSlider({
+    slides: {
+      perView: 3,
+    }
+  })
+
+  agora vamos achar a div que esta por volta dos meus slides que no caso é o home container (cada product é um slide.)
+  e passamos para ela ref={sliderRef}
+
+  isso da acesso ao keen-slider para modificar essa div que a gente flageou com o ref. basicamente é isso.
+  agora precisamos passar classes para a estilização funcionar. a classe do container vai ser keen-slider fica assim:
+  <HomeContainer ref={SliderRef} className="keen-slider">
+
+  agora cada produto vai ter a classe keen-slider__slide
+  so com isso o slide ja deve funcionar. agora temos que personaliza-lo.
+  porem o keen-slider não entende o gap. então vamos tirar o gap do homeContainer o padding nos produtos tambem faz o mesmo efeito então tambem vamos tirar eles.
+
+  mas ai no prorpio slides onde tem o perView do keen slides tem uma opção chamada spacing. ai nos vamos fazer o espaçamento por ela.
+  o spacing vai ser por px, então no lugar de 3 rem temos que colocar 48 e não vamos especificar o px.
+  fica assim:
+    const [SliderRef] = useKeenSlider({
+    slides: {
+      perView: 3,
+      spacing: 48,
+    }
+  })
+
+  
+
 
