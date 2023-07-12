@@ -251,4 +251,32 @@ export default function App({ Component, pageProps }:AppProps) {
 
 isso serviu para visualizar melhor que o app é carregado em todas as paginas. acho que poderiamos criar componentes em outra pasta fora dos pages e colocar esses componentes no app e não ter que criar o header no app.
 
+a image fica dando erro. então vamos ver como fazer a Image no next.
+as imagens que usamos geralmente estão em tamanhos diferentes em layouts e quando usamos elas em frontend para a web a gente precisa que elas sejam carregadas com muita performace e para isso a gente tem que observar varios pontos. por exemplo se a nossa imagem tem 1000 px mas vamos usar ela com 400px não tem porque a gente usar uma imagem de 1000 se vamos so usar 400 então o next otimiza de forma automatizada todas as imagens de nossa aplicação então ele vai criar uma versão aotomatica dessa iagem com so 400 px e ele vai carregar essa e não a de mil. ele consegue fazer imagens responsivas, se ele estiver em mobile vai carregar uma imagem menor etc. 
+usando o next Image é sempre legal presetar uma largura e altura, essa largura e altura não é definitiva, mas a gente pode colocar como se for a maior possivel. então na  img a gente coloca width e heigth como sendo os valores maiores que a gente deseja.
+
+# largura modular
+imagina que a gente quer que o nossa box fique com uma largura fixa e mais toda a margem da direita, dessa forma tendo sempre um espaço vazio a esquerda. porem caso apessoa de um woom out o espaço ate a margem direita vai crecer, sendo assim a box tambem cresce e mantem um espaço proporcional vazio a esquerda. como fazer isso?
+pra fazer isso  gente precisa fazer um calculo no css.
+vamos pegar a largura total da tela (100vw) - o tamanho fixo da box (vamos dizer 1180) o resultado disso é as duas margens, então temos que dividir por dois para ter apenas uma.como a divisão executa antes nos vamos escrever isso assim 
+o total do tamanho da box que queremos é 1180 + ((100vw-1180) / 2) 
+assim temos o tamanho da box + uma das margens.
+o css fica assim:
+width: '100%',
+maxWidth: 'calc(100vw - (100vw - 1180px)/2)'
+agora para aplicar a margem no lado que a gente quer:
+a gente coloca margin (left ou rigth ) : auto
+
+a gente quer fazer o footer sair um pouco da tela. vamos usar essa propriedade:
+    transform: 'translateY(110%)',
+        opacity: 0,
+        translate Y quer dizer no eixo Y 110 quer dizer que é mais do que o tama,nho total da tela.
+        juntando isso com esse hover;
+         '&:hover': {
+        footer: {
+            transform: 'translateY(0%)',
+            opacity: 1,
+        }
+        quer dizer que o footer fica armazenado fora da tela e quando a gente faz o hover nele ele vai aparecer para dentro da tela.
+
 
