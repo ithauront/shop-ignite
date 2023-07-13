@@ -321,6 +321,290 @@ nos vamos entéao fazer uma const para pegar de dentro desse useKeenSlider os sl
     }
   })
 
+  a pag ficou assim:
+  import Image from "next/image"
+import { HomeContainer, Product } from "../styles/pages/home"
+import { useKeenSlider} from 'keen-slider/react'
+
+import 'keen-slider/keen-slider.min.css';
+
+import camiseta1 from '../assets/camisas/Camisa-Maratona 1.png'
+import camiseta2 from '../assets/camisas/IgniteLab-T-shirt 2.png'
+import camiseta3 from '../assets/camisas/Igniter-abord-2-t-shirt 1.png'
+
+
+export default function Home() {
+  const [sliderRef] = useKeenSlider({
+    slides: {
+      perView: 2,
+      spacing: 48,
+    },
+  })
+
+  console.log("Slider Ref:", sliderRef);
+
+  return (
+   <HomeContainer ref={sliderRef} className="keen-slider">
+   <Product className="keen-slider__slide">
+    <Image src={camiseta1} alt='camiseta1'  width={520} height={480}/>
+
+    <footer>
+      <strong>Camiseta X</strong>
+      <span>R$ 79,90</span>
+    </footer>
+   </Product>
+   <Product className="keen-slider__slide">
+    <Image src={camiseta2} alt='camiseta1' width={520} height={480} />
+    <footer>
+      <strong>Camiseta Y</strong>
+      <span>R$ 79,90</span>
+    </footer>
+   </Product>
+   <Product className="keen-slider__slide">
+    <Image src={camiseta3} alt='camiseta1'  width={520} height={480}/>
+    <footer>
+      <strong>Camiseta Z</strong>
+      <span>R$ 79,90</span>
+    </footer>
+   </Product>
+   <Product className="kenn-slider__slide">
+    <Image src={camiseta3} alt='camiseta1'  width={520} height={480}/>
+    <footer>
+      <strong>Camiseta W</strong>
+      <span>R$ 79,90</span>
+    </footer>
+    </Product>
+   </HomeContainer>
+  )
+}
+
+
+# stripe
+
+nos vamos criar uma conta no stripe para fazer como se fosse nossa loja. 
+apos isso vamos entrar la no nosso longin e criar alguns produtos. ,no caso as camisas.
+cadastramos os produtos na aba ^rpdutos
+com os pordutos cadastrados vamos listar eles na nossa apmicação. do lado temos o desenvolvedores. e clicando la temos o painel de desenvolvedores do stripes onde tem as chaves api.
+nas chaves api vamos pegar a chave publica.
+e dentro do projeto vamos salvar elas na variavel ambiente.
+# variaveis ambiente são variaveis que o valor dela muda de acordo com o ambiente de nossa aplicação. então em desenvolvimento o valor dela é um, em produção é outro. e ela tambem não vai pro github. ela é secreta.
+no next para fazer isso a gente cria um arquivo nz raiw chamado .env.local
+e dentro desse arquivo a gente cria um PUBLIC_KEY = o valor 
+e pego tambem o valor da secretkey e faço igual é aconselhavel colocar um comentario pra dizer de onde elas vem
+FICOU ASSIM/
+#stripe
+STRIPE_PUBLIC_KEY=p aqui vai a chave copiada
+STRIPE_SECRET_KEY= aqui vai a chaver copiada
+
+# data fetch no next
+os indexadores veem o site com o js desabilitado ou sem esperar o tempo de resposta. entao eles nao vao ver o que vem da api porque isso demora pra chegar. o next vai carregar a pagina com o css e tudo no servidor node, porem o q roda no client side como as bibliotecas, o use effect e etc não vai aparecer porem existe uma forma de falar para o next que queremos que essa chamada da api rode no servidor node tambem.
+antes de tudo o arquivo precisa estar na pasta pages, em outra pasta a gente não consegue fazer isso.
+vamos fazer esse setTimeout para simular uma chamada de api:
+  const [list, setList]= useState<number[]>([])
+  const [sliderRef] = useKeenSlider({
+    slides: {
+      perView: 2,
+      spacing: 48,
+    },
+  })
+
+  useEffect(() => {
+    setTimeout(()=>{
+      setList([1,2,3])
+    }, 2000)
+  }, [])
+
+  para mandar ele rodar tambem no servidor ode o que a gente tem que fazer é o seguinte:
+  a gente pode exportar no fim do arquivo uma função chamada getServerSideProps ou seja pegar as propriedades que vem do serverside o servidor node e não do clientside que é o front end
+  essa const vai ser uma função que vai devolver de dentro dela propriedades como por exemplo uma lista com 1 2 e3 e a propriedade pode ser recebida pelo parametro da função home. então se eu mostrar em tela usando json.stringfy essa lista ela vai aparecer.
+  a const fica assim
   
+export const getServerSideProps= () => {
+  return {
+    props: {
+      list: [1,2,3]
+    }
+  }
+}
+assim fica a chamada da função home:
+export default function Home(props) {
+
+  e assim fica a chamaa pra lista:
+  <pre>{JSON.stringify(props.list)}</pre>
+
+  assim ja aparece a lista mesmo com o js desabilitado.
+  
+  IMPORTANTE
+  Com o codigo do useEffect o que acontece é que a pagina roda, e depois do timeout a lsita aparece.
+  para simular essa espera a gente pode fazer um await new promisse de 2 segundos do retorn da getServerSideProps
+  porem assim a pagina por completo demora dois segundos para ser exibida em tela e não apenas a parte da lista. o que quer dizer que ele espera a props para renderizar a pagina inteira.
+  ou seja o server não devolve nada pro browser até que tudo que a gente tenha colocado na função getserverside seja executado.
+  diferente do useEffect que não para a renderização do resto da tela
+  com a getSideSever por exemplo não vamos poder ter um load. porque a pagina nem vai ser exibida em tela.
+  se a gente colocar um console.log na funnção getServerSide ele nõa aparece no console do navegador. ele vai aparecer no server que esta rodando no terminal.
+  isso acontece porque esse codigo que esta no serverSide ele so executa no servidor node (que nesse caso é nosso terminal) ele nem chega para o navegador, qs unicas coisas que vao para o navegador são as props.
+
+* chamada api no getSideServer
+como as coisas que estão no getsideserver fazem toda a pagina esperar a sua resposta. não é bom a gente fazer toda chamada de api por ela, se não a pagina vai demorar para renderizar. o que é ruim para o usuario
+então na maioria das vezes ainda vamos preferir fazer as chamadas para api do modelo tradicional com useEffect
+so vamos usar o getServerSidePorps para fazer chamadas de coisas que a gente necessariamente precisa que estejam disponiveis assim que a pagina for exibia
+ou seja apenas informações cruxiais para estarem em tela que serão usadas por indexadores, bot e coisas do tipo
+# importante
+é importante tambem entender que o sideserverProps vai rodar coisas no server node, ou seja vai ser invisivel para o usuario final. então é uma boa coisa para quando precisamos fazer chamadas escondidas do nosso usuario. o que é o caso aqui porque temos chaves secretas, 
+então para usar a chave secreta para buscar os produtos o getServerSideProps é o melhor lugar para colocar codigo sensivel (autentificação, banco de dados etc)
+vamos instalar a biblioteca stripe
+npm i stripe
+vamos criar uma pasta lib na src dentro dela um arquivo stripe.ts
+o arquivo stripe esta assim
+import Stripe from 'stripe'
+
+export const stripe = new Stripe({
+
+}) 
+
+precisamos agora pegar a privateKey e para isso vamos pegar um process.env.Stipe_secretKey fica assim
+fica assim
+import Stripe from 'stripe'
+
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+
+}) 
+agora o segundo parametro é o objeto que vamos pegar
+apiVersion: 'a versão que estiver' depois vamos passar o appInfo: {
+  name: o nome de nosso app
+}
+passamos o a appInfo pq assim se faz um log la e podemos ter controle de quem fez qual requisição.
+a pagina fica assim
+import Stripe from 'stripe'
+
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+apiVersion: '2022-11-15',
+appInfo: {
+    name: 'ingite shop'
+}
+}) 
+
+agora voltamos para a nossa pagina index e vamos la pra serverSideProps
+e fazemos uma const response = await stripe.products.list()
+vamos aprovietar e tipar a getServerSide props com a tipagem GetServerSideProps que vem do next.
+como nos não vamos querer todos os dados que vem dessa lista agente pode fazer uma transformação dos dados. riando uma nova lista de produtos. fazendo um mapeamento de cada produto e retornando um novo objeto so com o que a gente quer
+a unica coisa um pouco diferente é o preço que não vem na listagem, mas o stripe tem um conceito chamado expanding responses ue é basicamente expandir um relacionamento com base em uma resposta.
+o default price é um relacionamento do preço com o produto, mas se a gente fizer um expand neme ele vai retornar o objeto do preço do produto.
+então no list a gente tem que passar um objeto e dentro dele passar o expand: ['data.default_price'] agora com isso a gente consegue pegar a informação do preço.
+para pegar essa info dele a gente vai fazer product.default_price (mesmo passando o mouse em cima ele vai dizer que é o id do preço porque ele não entende que fizemos o expand) para isso não acontecer a gente vai dar um const price = reponse.product.default_price as Stripe.price assim a gente ja coloca a tipagem que ele vai entender. assim podemos usar nosso price : price.unit_amount nesse objeto. isso vai vir em centavos. para evitar problemas de numeros float e etc. entao 
+# dica
+sempre que formos salvar preço em banco de dados a gente multiplica por 100 para ele ir pra la em centavos. 
+e quando for usar divide por 100
+agora colocamos os products na nossas props de etorno o codigo completo fica assim.
+export const getServerSideProps: GetServerSideProps = async () => {
+  const response = await stripe.products.list({
+    expand: ['data.default_price']
+  })
+  const products = response.data.map(product => {
+    const price = product.default_price as Stripe.Price
+    return {
+      id: product.id,
+      name: product.name,
+      imgUrl: product.images[0],
+      price: price.unit_amount / 100, 
+    }
+  })
+  return {
+    props: {
+    products
+    }
+  }
+}
+
+agora na nossa função home vamos colocar desestruturar e pegar os products de dentro das props
+
+para a image a gente tem que especificar para qual dominio vai funcionar. então temos quie ir no nextconfig. dentro vamos criar uma opção chjamada images: {
+  domains: [ e qaui a gente coloca os dominios no nosso caso é files.stripe.com]
+}
+o next config fica assim:
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+
+  images: {
+    domains: [
+      'files.stripe.com'
+    ]
+  }
+}
+
+module.exports = nextConfig
+
+e nossa pagina home fica assim:
+import Image from "next/image"
+import { HomeContainer, Product } from "../styles/pages/home"
+import { useKeenSlider} from 'keen-slider/react'
+
+import 'keen-slider/keen-slider.min.css';
+
+import { stripe } from "../lib/stripe";
+import { GetServerSideProps } from "next";
+import Stripe from "stripe";
+
+interface HomeProps{
+  products: {
+    id: string;
+    name: string;
+    imageUrl: string;
+    price: number;
+  }[]
+}
+
+export default function Home({products}: HomeProps) {
+ 
+  const [sliderRef] = useKeenSlider({
+    slides: {
+      perView: 2,
+      spacing: 48,
+    },
+  })
 
 
+  return (
+   
+   <HomeContainer ref={sliderRef} className="keen-slider">
+     <pre>{JSON.stringify(products)}</pre>
+ { products.map(product => {
+  return(
+    <Product key={product.id} className="keen-slider__slide">
+    <Image src={product.imageUrl} alt='camiseta'  width={520} height={480}/>
+
+    <footer>
+      <strong>{product.name}</strong>
+      <span>R$ {product.price}</span>
+    </footer>
+   </Product>
+  )
+   
+ })}
+   
+   </HomeContainer>
+  )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const response = await stripe.products.list({
+    expand: ['data.default_price']
+  })
+  const products = response.data.map(product => {
+    const price = product.default_price as Stripe.Price
+    return {
+      id: product.id,
+      name: product.name,
+      imgUrl: product.images[0],
+      price: price.unit_amount / 100, 
+    }
+  })
+  return {
+    props: {
+    products
+    }
+  }
+}
+
+a imagem vai demorar um pouco mais de carregar porque ela vai da api. uma forma de mudar isso é pegar uma biblioteca de blur blur to hash instalar e usar. assim ela pode gerar uma imagem desfocada da imagem que queremos carregar ue carrega muito mais rapido e vai focalizando quando estamos recebendo a imagem.
