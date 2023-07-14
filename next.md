@@ -608,3 +608,40 @@ export const getServerSideProps: GetServerSideProps = async () => {
 }
 
 a imagem vai demorar um pouco mais de carregar porque ela vai da api. uma forma de mudar isso é pegar uma biblioteca de blur blur to hash instalar e usar. assim ela pode gerar uma imagem desfocada da imagem que queremos carregar ue carrega muito mais rapido e vai focalizando quando estamos recebendo a imagem.
+
+# SSG
+
+o carregamento de coisas da api gasta dados, memoria e tudo mais alem de deixar a aplicação pesada.
+nesse tipo de pagina que é um e-commerce vai raramente mudar os dados durante o dia. então a gente pode fazer um cash para salvar a pagina uma vez e depois manter isso salvo durante talvez o temoo s de 24h para que os proximos acessos ejam mais rapidos sem precisar buscar do backend.
+para isso vamos usar aquela vantagem do next que é carregar a pagina em um cach paralelo. o SSG staticSiteGenerator
+para fazer isso é muito facil. a gente so precisa mudar o GetServerProps para
+getStaticProps tanto na const quanto nas props que a gente fez. vai ficar assim:
+export const getStaticProps: GetStaticProps = async () => {
+  const response = await stripe.products.list({
+    expand: ['data.default_price']
+  })
+  const products = response.data.map(product => {
+    const price = product.default_price as Stripe.Price
+    return {
+      id: product.id,
+      name: product.name,
+      imageUrl: product.images[0],
+      price: price.unit_amount / 100, 
+    }
+  })
+  return {
+    props: {
+    products
+    }
+  }
+}
+
+se a gente der F5 nada vai mudar porque em desenvolvimento o next trata a getStatic exatamente como a getServerSide. isso para não criar cash e a gente modificar algo não ver o resultado e ficar sem entender o porque, ou seja para ecvitar erros.
+para testar isso a gente tem que ou colocar o projeto em producão ou executar ele como se ele estivesse em produção.
+porem ao mudar para static nos não temos mais açoes as respostas por exemplo nos props. isso porque o metodo não roda a cada requisição feita à pagina, ele so vai rodar no momentoq ueo next criar uma versão de cash. o primeiro momento que isso acontece é quando fazemos o build da aplicação. ele procura por todas as paginas que precisam ser estaticas e constroi elas.
+se a gente rodar um npm run build isso acontece e ele vai mostrar uma lista dizendo que o que tem a bolinha branca esta gerada em SSG com o que foi gerado la. as que não tem a bolinha tambem foram geradas mas sem o json. 
+se apos a gente der um npm run start ele vai abrir a pagina que foi construida, muito mais rapdio do que era antes. porem ao fazer isso o build vai ficar esse até a gente mandar fazer outro. 
+para evitar isso a gente pode colocar no retorno do getStatic uma propriedade chamada revalidate.
+# revalidate
+o revalidate é um numero em segundos que vai ser o tempo em que queremos que sej recriada. ou seja ela vai ser gerada no momento da build e a cada  x segundos uma nova é criada.
+a gente pode colocar algo como 60 * 60 * 2 para ele revalidar a cada 2 horas, ou algum calculo que a gente queira.
