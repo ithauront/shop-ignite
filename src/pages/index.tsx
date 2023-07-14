@@ -26,14 +26,14 @@ export default function Home({products}: HomeProps) {
     },
   })
 
-
   return (
+    
    
    <HomeContainer ref={sliderRef} className="keen-slider">
      { products.map(product => {
   return(
     <Product key={product.id} className="keen-slider__slide">
-    <Image src={product.imageUrl} alt='camiseta'  width={520} height={480}/>
+    <Image src={product.imageUrl} alt='camiseta'  width={520} height={480} priority={true}/>
 
     <footer>
       <strong>{product.name}</strong>
@@ -57,7 +57,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
       id: product.id,
       name: product.name,
-      imgUrl: product.images[0],
+      imageUrl: product.images[0],
       price: price.unit_amount / 100, 
     }
   })
