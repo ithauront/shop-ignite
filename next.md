@@ -645,3 +645,34 @@ para evitar isso a gente pode colocar no retorno do getStatic uma propriedade ch
 # revalidate
 o revalidate é um numero em segundos que vai ser o tempo em que queremos que sej recriada. ou seja ela vai ser gerada no momento da build e a cada  x segundos uma nova é criada.
 a gente pode colocar algo como 60 * 60 * 2 para ele revalidar a cada 2 horas, ou algum calculo que a gente queira.
+o unico problema de usar o static é que a gente não tem acesso aos contextos das requisições como as informações do usuario logado, coockies e etc.
+por exemplo se eu precisar de informações que são dinamicas ou seja que precisam de um id de usuario para renderzar a coisa correta, por exempl o perfil do usuario em um instagram. ai eu não posso mais usar o estatico, se não todos os usuarios iriam ver a mesma coisa.
+
+# preço
+vamos formatar o preço dentro do static para não executar ele toda vez que a gente rodar o projeto como é o caso que esta acontecendo com ele estando formadado dentro do span.
+como não é uma coisa como uma data (que depende da data atual) e não podemos colocar dentro do static se néao ele vai errar a data. no caso do preço que não vai mudar a gente pode formatar dentro.
+vamos colocar o new Intl numberformat ptbr e o price. ficou assim
+return {
+      id: product.id,
+      name: product.name,
+      imageUrl: product.images[0],
+      price: new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BLR',
+              }).format(price.unit_amount / 100), 
+    }
+  })
+
+  # navegação no next
+  riamos o product como uma ancora, ou seja uma tag a
+  por causa disso podemos adicionar um href
+  e isso vai direcionar o usuario ao clicar no produto para uma outra pagina.
+  agora pensa o seguinte: nos temos o id do produto. e temos a pagina especifica para o id do produto, que a gente criou em pages com o [id]. então no href a gente podia colocar algo como href={'/product/${product.id}'}
+o texto ficou em azul porque colocamos um href no product temos aque voltar no styles e no strong do footer colocar a color gray100.
+com isso a navegação vai fucnionar.
+porem ao fazer a nagevação assim o nosso navbegador vai carregar toda a aplicação do zero de novo ao clicar para navegar. ou seja toda a base da aplicação que não muda de uma pagina para outra vai ser recarregada do zero.
+para evitar isso o next nos oferece o componente Link que podemos importar de dentro do pacote next/link
+e a gente usa esse componente por volta da nossa ancora, ou seja o product vai ficar dentro do link. e como o link que vai aparecer no map é ele que vai recerber a key e o href.
+agora ao mudar de pagina tudo que ja foi carregado na home não vai mais carregar.
+ou seja apesar do serverSideRender e do static o next não deixa de ser um spa para a maioria dos caso o que significa que quando fazemos uma navegação de uma pagina para outra utilizando um link o next se comporta como uma aplicação react tradicional.s
+  
