@@ -676,3 +676,33 @@ e a gente usa esse componente por volta da nossa ancora, ou seja o product vai f
 agora ao mudar de pagina tudo que ja foi carregado na home não vai mais carregar.
 ou seja apesar do serverSideRender e do static o next não deixa de ser um spa para a maioria dos caso o que significa que quando fazemos uma navegação de uma pagina para outra utilizando um link o next se comporta como uma aplicação react tradicional.s
   
+  # construção da pagina de produco
+  dentro da pasta styles/pages vamos criar um arquivo chamado product.ts
+  la vamos criar uma container um image container e um product ditails 
+
+  essa é a estrutura basica da pagina de product antes dela ser modular:
+  import { useRouter } from "next/router"
+import { ImageContainer, ProductContainer } from "../../styles/pages/product"
+import Image from "next/image"
+
+export default function Products() {
+    const {query} = useRouter()
+    return(
+        <ProductContainer>
+            <ImageContainer>
+                
+            </ImageContainer>
+
+            <ProductContainer>
+                <h1>Camiseta X</h1>
+                <span>R$ 10,00</span>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id, harum! Labore suscipit placeat dolorem similique facere libero neque quidem non officiis! Velit eius, molestiae eveniet iusto nihil aperiam eum doloribus.</p>
+                <button>Comprar agora</button>
+            </ProductContainer>
+        </ProductContainer>
+    )
+}
+
+agora vamos fazer os estilos dessa pagina em cada tag dessa que criamos: não vou copiar os estilos aqui.
+
+
