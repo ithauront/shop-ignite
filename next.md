@@ -812,6 +812,20 @@ export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params
 
 se rodarmos isso vai dar erro dizendo que a getStaticPath é obrigatorio para paginas ssg dinamicas e a nossa esta faltando isso.
 a nossa pagina é dinamia porque ela tem como parametro o id do produto. essa pagina muda de endereço com base nesse parametro, por isso ela é dinamica.
-
+o problema qcontece porque imagina que o codigo todo vai rodar quando fizermos o build para poder ter essas paginas estaticas. mas a pagina do produto precisa do id de algum produto para ser criada. mas como ela vai achar esse id se não foi clicado em nenhu produto? por isso temos um erro, ela não acha o parametro necessario para puxar as coisas corretas da api.
+por isso quando temos paginas estaticas que precisam de parametros nos precisamos criar uma e exportar uma const getStaticPath que possui tambem sua tipagem especifica vinda do next. que é bvasicamente um metodo que devolve esses ids
+esse metodo funciona da seguinte forma, ele precisa retornar um objeto e dentro desse objeto um paths que é  um array
+esse array precisa ter varios objetos dentro dele. e cada objeto desses retorna basicamenteos parametros que nos queremos.
+fica assim (depois falamos do fallback)
+export const getStaticPaths: GetStaticPaths = async() => {
+    return {
+        paths: [
+            {params: {id: "prod_OFcT8N1YUwVN0t"}}
+        ],
+        fallback: false
+    }
+}
+temos que fazer um objeto para cada produto.
+porem imagina que nosso comercio tem 20 mil produtos, vamos ter que fazer o path para 20mil coisas? não nos temos como falar para esse metodo que se houverem produtos que não especificamos nos podemos dar um compoetamento para o site. veremos isso em breve.
 
 
