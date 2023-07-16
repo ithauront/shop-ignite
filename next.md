@@ -704,5 +704,114 @@ export default function Products() {
 }
 
 agora vamos fazer os estilos dessa pagina em cada tag dessa que criamos: não vou copiar os estilos aqui.
+# receber ifrmações na product
+vamos pegar estaticamente igual fizemos na home. usando a getStaticPrps
+porem a pagina do produto recebe parametros do id do produto em questão enquanto a home não faz isso
+então se a gente desetruturar o argumento da função async nos vemos que podemos pegar um params e com esse params a gente pode acessar o id que vem atravez do nome do arquivo. fica assim
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+    const productId = params.id;
+    agora com o productId nos usamos o id que vem atravez da url.
+    e agora vamos usar o retrive do stripe para pegar esse producto especifico pelo id.
+    fica assim:
+       const product = await stripe.products.retrieve(productId, {
+        expand: ['default_price']
+    }) 
+
+    adicionando o expand para o preco e como desas veznão é uma lista não precisamos usar o data.
+    so que isso da um erro no productId do retrive pq o retrive espera uma string e nosso productId pode ser uma tring ou um array de string.
+    para evitar isso temos dois metodos, podemos forçar uma conversão para string usando o String[params.id]
+    ou podemos usar os getStaticProps tipagem que tem alguns genericos o primeiro é sobre o as nossas props do retorno, como não queremos tipar ele vamos botar como any. o segundo generico vai ser o formato do objeto de parms então se abrimos um objeto {id:string} ou seja dizemos que o param.id é uma string ele vira uma string e o erro passa. vamos fazer assim e fica dessa forma
+    export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params }) => {
+   agora podemos copiar o codigo do retorno da home e colocar o objeto de retonro dentro das props. fica assim
+   export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params }) => {
+    const productId = params.id
+
+    const product = await stripe.products.retrieve(productId, {
+        expand: ['default_price']
+    })
+    const price = product.default_price as Stripe.Price
+      return {
+        props: {
+         product:   {
+                id: product.id,
+                name: product.name,
+                imageUrl: product.images[0],
+                price: new Intl.NumberFormat('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                        }).format(price.unit_amount / 100), 
+                decription: product.description
+              }
+        },
+        revalidate: 60* 60 * 1 // apesar do 1 não mudar o calculo ele é interessante para a visualização rapida de quanto tempo esta se passando, se quisermos aumentar passamos ele para 2, 3 etc.
+    }
+}
+
+agora ja temos acesso a id nome image price e adicionamos a descrição.
+agora pegamos esses dados atravez das props do componente da função geral da pagina. criamos uma interface dizendo que as props recebem um objeto chamado product e colocamos todas as caracteristicas desse objeto.
+a pagina fica assim:
+import { useRouter } from "next/router"
+import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
+import Image from "next/image"
+import { GetStaticProps } from "next"
+
+import { stripe } from "../../lib/stripe"
+import Stripe from "stripe"
+
+interface ProductProps {
+    product: {
+    id: string;
+    name: string;
+    imageUrl: string;
+    price: string;
+    description: string;
+    }
+}
+
+export default function Products({product}: ProductProps) {
+    const {query} = useRouter()
+    return(
+        <ProductContainer>
+            <ImageContainer>
+                <Image src={product.imageUrl} width={520} height={480} alt="" />
+            </ImageContainer>
+
+            <ProductDetails>
+                <h1>{product.name}</h1>
+                <span>{product.price}</span>
+                <p>{product.description}</p>
+                <button>Comprar agora</button>
+            </ProductDetails>
+        </ProductContainer>
+    )
+}
+
+export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params }) => {
+    const productId = params.id
+
+    const product = await stripe.products.retrieve(productId, {
+        expand: ['default_price']
+    })
+    const price = product.default_price as Stripe.Price
+      return {
+        props: {
+         product:   {
+                id: product.id,
+                name: product.name,
+                imageUrl: product.images[0],
+                price: new Intl.NumberFormat('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                        }).format(price.unit_amount / 100), 
+                description: product.description,
+              }
+        },
+        revalidate: 60* 60 * 1 // apesar do 1 não mudar o calculo ele é interessante para a visualização rapida de quanto tempo esta se passando, se quisermos aumentar passamos ele para 2, 3 etc.
+    }
+}
+
+se rodarmos isso vai dar erro dizendo que a getStaticPath é obrigatorio para paginas ssg dinamicas e a nossa esta faltando isso.
+a nossa pagina é dinamia porque ela tem como parametro o id do produto. essa pagina muda de endereço com base nesse parametro, por isso ela é dinamica.
+
 
 
