@@ -827,5 +827,29 @@ export const getStaticPaths: GetStaticPaths = async() => {
 }
 temos que fazer um objeto para cada produto.
 porem imagina que nosso comercio tem 20 mil produtos, vamos ter que fazer o path para 20mil coisas? não nos temos como falar para esse metodo que se houverem produtos que não especificamos nos podemos dar um compoetamento para o site. veremos isso em breve.
+a navegação nao estava funcionando porque no index eu estava usando o href com aspas simples mas eu fazia uma concatenação com $ então na verdade eu teria que usar as template strings ` ` apos trocar funcionou.
+
+mas agora vamos fazer de uma forma que não precise escrever o caminho estatico de todos os produtos.
+quando passamos parametros no paths o que queremos passar para o next é que são esses os parametros que ele vai executar quando ele rodar o getStaticProps.
+então o que fazer quando temos uma quantidade grande de produtos? 
+se o paths é tudo que vai ser criado no momento da build, ou seja ele vai odar o staticProps uma vez para cada param, temos que manter isso enxuto porque se não a build vaificar pesadissima.
+então quando temos muitos produtos temos duas opções,
+1) a gente busca os produtos mais vendidos ou mais acessados, e fazemos os paths deles... nesse caso para dos os outros produtos a gente encontraria o erro 404 de not found, e por isso temos a opção fallback.
+* fallback
+quando passamos fallback false - ao acessar uma pagina de um produto que não passamos no path ele vai dar o erro 404.
+com o fallback true o next vai pegar o id que a gente passou para os paths para tentar gerar uma pagina estatica similar a versão que existe, o next vai pega o html de nossa pagina e vai tentar carregar os dados do produto por baixo dos panos. ou seja ele vai dar undefined para as coisas do produto, ele vai executar o html e quando ele terminar de carregar tudo ele vai la na api e busca as coisas do produto especifico. por isso nos teriamos que colocar amgum estado de load nesses elementos modulares.
+para detectar que esta acontecendo um load o next permite para a gente obter a informação isFallback atravez do hook useRouter() 
+const { isFallback } = useRouter()
+
+como usar isso vamos fazer um quando o isFalback for true vamos retornar um loading. e apenas isso vai renderizar em tela um loading para todos as informações modulares que ainda não foram carregadas.
+  const { isFallback } = useRouter()
+    if (isFallback) {
+        return <p>Loading...</p>
+        }
+
+        não é recomendado mas caro a gente não queira gerar esse estado de load a gente tem a opção fallback blocking que faz toda a tela ficar em branco até ter algo para mostrar. mas para o usuario final é uma experiencia pior.
+  é bom saber que com o falback true nos podemos colocar nada no array de paths, assim as paginas estaticas so serão geradas o html ate as respostas da api chegr.
+  
+
 
 
