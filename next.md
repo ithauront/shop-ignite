@@ -850,6 +850,42 @@ como usar isso vamos fazer um quando o isFalback for true vamos retornar um load
         não é recomendado mas caro a gente não queira gerar esse estado de load a gente tem a opção fallback blocking que faz toda a tela ficar em branco até ter algo para mostrar. mas para o usuario final é uma experiencia pior.
   é bom saber que com o falback true nos podemos colocar nada no array de paths, assim as paginas estaticas so serão geradas o html ate as respostas da api chegr.
   
+  # prefetch
+  o next faz um pre fetch de links de forma automatizada (é possivel que ele não faça em desenvolvimento mas faz em produção.)
+  quando rodamos a build de produção e olharmos na aba network o next carrega a home e faz uma chamada para cada produto que aparece em tela. e quando passamos o mouse por cima dele o next faz logo mais uma chamada para essa rota, pra ja ir carregando caso voce clique ja trazendo a resposta da api aos produtos que aparecem em tela.
+  ou eja para o next cada vez qua e gente tiver um link em tela, ele faz uma intersection observer (uma api do navegador que permite observar quando elementos são aparentes em tela.), ou seja ele deduz que voce pode clicar e ja vai tentando carregar as coisas (faz prefetch). mesmo que voce não passe essa pagina no getStaticPaths.
+  isso é bom porque acelera a pagina e da boa experiencia para o usuario. mas é ruim porque s temos muito links em tela eel vai carregar muita coisa e ficar carregadno toda hora que o mouse passa.
+  para controlar isso a gente tem que no link temos que usar a propriedade prefetch que por padrão é true, mas podemos mudar para false
+fica assim:
+  <Link href={`/product/${product.id}`} key={product.id} prefetch={false} >
+
+  assim o prefetch vai funcionar somente no hover e para de funcionar automaticamente ao carregar, so disso ja elimina varias carregasdas.
+  essa feature do prefecth é muito boa mas temos que tomar cuidado caso a gente tenha muios links para colocar po false para a aplicação não ficar pesada
+
+  # route no next
+  se o next nos cria um servidor next para carregar em backend as informações do frontend nos poderiamos usar ele para criar rotas para fazer algo queum servidor backend faria, como autenticação, lidar com banco de dados, envio de email.
+  e sim podemos ter isso no next, apesar de não ser o mais aconslhado para todos projetos, para muitos projetos e alguns tipos de funcionalidade, faz sentido a gente usar isso. ou seja ter rotas backend dentro do nosso frontend.
+  isso se da em casos prnciapalmente  em casos que não temos uma api extarna ai a gente cria rotas diretamente no servidor node
+  ou quando temos funcionalidade que queremos incluir que precise executar pelo lado do servidor mas ela é expecifica do app wed de nossa aplicação porque se a gente colocar ela no backend ela atrapalharia outros clientes como mobile, ou algo assim, são coisas especificas do ambiente que iremos rodar a aplicação como autentificação com google. então temos que ter controle de em qual plataforma o usuario esta acessando. e assim colocamos no serverside.
+  na pratica para criar rotas
+
+  # rotas
+  na pasta pages a gente cria uma pasta chamada api
+  e nesta pasta colocamos um arquivo com o nome que quisermos mas tem que ser ts e não tsx porque dentro dessas rotas não vai codigo tsx
+  e de la a gente exporta uma funcção  que recebe req e res ou seja requisição e resposta assim como qualquer express.
+  e retorna uma resposta assim:
+
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+    return res.json({message: "hello world"})
+}
+agora podemos acessar ele usando o /api/hello
+e todo codigo que roda nele é um codigo que roda em serverside enão não precisamos nos preocuar tanto com dados sensiveis comoa cesso a banco e etc.
+é ideal a gente fazer a tipagem do req e do res por isso colocamos o NextApiRequest e response
+
+ podemos pensar porque fazer isso se a gente consegue executar funções pelo serverSide usadno o getStaticProps e assim podemos manipular informações sensiveis como fizemos com as secretKey, pra que precisamos da rota?
+ * porque o getServerSide so vai exectar as coisas no load, ou seja quando carregar a pagina pela primeira vez. agora com a rota a gente pode executar referente a ção de um usuario como um click de butão.
 
 
 
