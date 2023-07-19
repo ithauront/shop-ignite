@@ -887,5 +887,113 @@ e todo codigo que roda nele é um codigo que roda em serverside enão não preci
  podemos pensar porque fazer isso se a gente consegue executar funções pelo serverSide usadno o getStaticProps e assim podemos manipular informações sensiveis como fizemos com as secretKey, pra que precisamos da rota?
  * porque o getServerSide so vai exectar as coisas no load, ou seja quando carregar a pagina pela primeira vez. agora com a rota a gente pode executar referente a ção de um usuario como um click de butão.
 
+ # checkout
+ o stripe tem o proprio checkout dele então nos vamos redirecionar a pessoa para o proprio checkout do stripe para ela finalizar o pagamento la
+ e para isso vamos usar uma api route porque essa ação não pode ser criada client side ela tem que ser criada a partir do side server ^porque precisamos usar noss secretkey
+ e esse checkout vem de uma ação do usuario ele precisa clicar no butão e por isso vamos usar uma api.
+ para criar isso vamos transformar ela em uma função assincrona e pegar o await la da stripe uma propriedade chamada checkout e dela a sessions e create() 
+ dentro do crate vamos passar um objeto com o que queremos que tenha, priemeiro vamos colocar o mode; e no moute tem alguns nos vamos escolher o payment pq vai ser um so pagament.
+ o outromodo obrigatorio que temos que colocar é o line itens. que vai dar informações sobre qual produto o usuario esta comprando.e ai a gente tem duas opções podemos passar todo o objeto do produto com nome descrição etc do zero. isso é valido quando não cadastramos o produto dentro do stripe, porque podemos criar checkout de algo que não esta cadastrado no stripe.
+ ou podemos passar apenas a informação price que é igual ao id do preço que é o produto tem um relacionamento diferente, podemos ter varios preços para o mesmo produto, por por exemplo promoção. para o checkout entender que o preço especifico esta no carrinho a gente precisa passar o price id. e ai vamos criar a const dessa priceID para especificar ela. e a outra info que precisamos colocar no line itens é a quantidade.
+ com isso ainda da erro porque ele diz que ainda falta duas infos obrigatorias a cancel url e a success url. nos passamos elas em branco. fica assim:
+ import { NextApiRequest, NextApiResponse } from "next";
+import { stripe } from "../../lib/stripe";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const priceID = ''
+  const checkoutSession = await stripe.checkout.sessions.create({
+    cancel_url: '',
+    success_url: '',
+    mode: "payment",
+    line_items: [
+        {
+            price: priceID,
+            quantity: 1,
+        }
+    ],  
+  })
+}
+
+a cancel e sucees são as url de onde iremos redirecionar o usuario caso ele compre com sucesso ou cancele a compra.
+nos vamos criar o endereço no env.local para que isso não seja mostrado para o cliente. vaos la fazer um comentario para dizer o que é e vamos chamar de NEXT_URL e colocar o endereço que estamos o localhost mas claro que na aplicação real colocariamos outro endereço.
+fica assim:
+# APP
+NEXT_URL=https://localhost:3000
+
+voltamos na rota e criamos nossas variaveis.
+fica assim
+const success_url = `${process.env.NEXT_URL}/success`
+    const cancel_url = `${process.env.NEXT_URL}/success`
+    o endereço co cancel e succes esta igual apenas por que isso é um teste e estamos mandando ambos para home. mas na real serriam endereços diferentes.
+    e nas prorpiedades cancel e succes a gente passa eles.
+    fica assim:
+    import { NextApiRequest, NextApiResponse } from "next";
+import { stripe } from "../../lib/stripe";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const priceID = ''
+    const success_url = `${process.env.NEXT_URL}/success`
+    const cancel_url = `${process.env.NEXT_URL}/success`
+  const checkoutSession = await stripe.checkout.sessions.create({
+    cancel_url: success_url,
+    success_url: cancel_url,
+    mode: "payment",
+    line_items: [
+        {
+            price: priceID,
+            quantity: 1,
+        }
+    ],  
+  })
+}
+
+agora vamos fazer a priceID
+atualemente no nosso product na rota id nos nao temos o priceID temos apenas o price ou o id do produto. mas podemos obter o priceid. na pagina [id] ao carregar os dados do produto nos carregamos tambem o defaultprice nessa linha:
+    const product = await stripe.products.retrieve(productId, {
+        expand: ['default_price']
+o defaultprice é o preço setado como padrão. então no retorno de product nos podemos retornar tambemessa informação, criamos o defaultPriceId: product.default_price.id. ou melnhor como ja tinhamos setado o price para ser o product.default_price nos vamos setar price.id. as props ficam assim com o priceId no fim:
+const price = product.default_price as Stripe.Price
+      return {
+        props: {
+         product:   {
+                id: product.id,
+                name: product.name,
+                imageUrl: product.images[0],
+                price: new Intl.NumberFormat('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                        }).format(price.unit_amount / 100), 
+                description: product.description,
+                defaultPriceId: price.id,
+              }
+
+atualizamos isso na interface como sendo uma string e mandamos ele
+so mudar isso queja vai fucnionar:
+interface ProductProps {
+    product: {
+    id: string;
+    name: string;
+    imageUrl: string;
+    price: string;
+    description: string;
+    defaultPriceId: string;
+    }
+
+    agora para testar vamos fazer uma função handleBuyProduct e nela vamos dar so um console.log(defaultPriceID) e vamos chamar essa função ao clcar no butão de comprar.
+    vamos rodar o programa copiar o que o console diz ser a priceId apos apertarmos o butão e colar la na rota no priceID. 
+    mudamos o nome do arquivo de hello para checkout. no fim do checkout nos vamos dar um retorno res.status(201) ai ele vai dar o status 201 de ter criado e um json({
+      checkout_URL: que vem de checkoutSession.url) para ele ir para a pagina checkot para finalizat a compra dele; essa url é para onde iremos redirecionar ele. fica assim:
+       return res.status(201).json({
+    checkoutUrl: checkoutSession.url,
+  })
+}
+
+
+agora com isso salvo se a gente chamar a rota /api/checkout ele vai retornar uma url para a gente. apos se comunicar com api. r ao clicar nesse endereço ele ja entrega para a gente uma pagina de pagamento toda certinha com o item correto descrição preço e tudo.
+
+# dica
+o stripe tem cartoes testes que a gente pode usar para testar o metodo de pagamento de forma falsa apenas para ver se funciona. temos que pesquisar stripecard test. ele tem tanto que da certo quanto que da errado.
+
+
 
 
