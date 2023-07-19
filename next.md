@@ -994,6 +994,49 @@ agora com isso salvo se a gente chamar a rota /api/checkout ele vai retornar uma
 # dica
 o stripe tem cartoes testes que a gente pode usar para testar o metodo de pagamento de forma falsa apenas para ver se funciona. temos que pesquisar stripecard test. ele tem tanto que da certo quanto que da errado.
 
+# handlebuyproduct
+vamos melhorar a função handle buy product. transformar ela em async. e colocar o try catch porque isso é aconselhavel quando tratamos de coisas que vem de api. no catch vamos colocar um alert falha ao redirecionar
+atch (err) {
+        //conectar isso a uma feramenta de observabilidade como (Datadog / sentry)
+        alert('falha ao redirecionar ao checkout')
+      } 
+
+      o comentario é so para o que seria legal de fazer.
+
+agora para o try vamos instalar o axios. para comunicarmos o cliente a rota api do next da mesma forma que conectamos com qualquer rota node. como queremos criar um checkout a melhor opção é o axios.post.
+nos não precisamos criar um lib do axios para setar a baseurl. isso porque a api esta rodando no mesmo endereço que o frontend ou seja ambos estão rodando no host:3000.. nesse caso basta colocar o pathh da rota do next tirando a parte do dominio (localhost:3000) que o axios vai entender. ou seja fica post('/api/checkout') e no segundo argumento vamos passar os parametros que queremos enviar.
+vamos pegar a checkoutUrl de dentro do response.data const 
+{checkoutUrl} = reponse.data
+ e vamos redirecionar o usuario para ela.
+ para redirecionar o usuario por dentro de uma função tem duas formas:
+ 1) se for para uma aplicação externa (nosso caso que vamos mandar para a stripe) usamos o window.location.href = checkoutUrl
+ 
+ 2) se for para uma rota interna vamos far um const router = useRouter (que vem do next) e depois damos o router.push('rota que queremos') 
+ como vamos usar o primeiro nossafunção completa fica assim:
+
+    async function handleBuyProduct () {
+      try {
+        const reponse = await axios.post('/api/checkout', {
+            priceID: product.defaultPriceId
+        })
+
+        const {checkoutUrl} = reponse.data
+        window.location.href = checkoutUrl
+      } catch (err) {
+        //conectar isso a uma feramenta de observabilidade como (Datadog / sentry)
+        alert('falha ao redirecionar ao checkout')
+      }     
+    }  
+
+como isso demora um pouco a gente pode criar um estado chamado isCreatingCheckoutSession e setIsCreatingC... e vamos colocar esse estado como boolean.
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
+
+e colocamos isso no inicio do try como true e no cacth como false. 
+* importante nos não precisamos tirar o estado do true caso de tudo certo porque o usuario sera redirecionado para outra pagina de qualquer forma (porem se a gente quisesse mudar era so colocar um finaly(set...(true)) no final de turo (depois de fechar o catch))
+agora vamos passar um disable para o butão sempre que essa opção estiver como true o botão fica assim
+<button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>Comprar agora</button>
+e vamos fazer a estilização de opacity e cursos para o cao do disabled. (não coi volovar aqui.)
+
 
 
 
