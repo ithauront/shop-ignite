@@ -1036,7 +1036,162 @@ e colocamos isso no inicio do try como true e no cacth como false.
 agora vamos passar um disable para o butão sempre que essa opção estiver como true o botão fica assim
 <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>Comprar agora</button>
 e vamos fazer a estilização de opacity e cursos para o cao do disabled. (não coi volovar aqui.)
+nossa pagina product ficou assim:
+import { useRouter } from "next/router"
+import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
+import Image from "next/image"
+import { GetStaticPaths, GetStaticProps } from "next"
 
+import { stripe } from "../../lib/stripe"
+import Stripe from "stripe"
+import axios from "axios"
+import { useState } from "react"
 
+interface ProductProps {
+    product: {
+    id: string;
+    name: string;
+    imageUrl: string;
+    price: string;
+    description: string;
+    defaultPriceId: string;
+    }
+}
 
+export default function Products({product}: ProductProps) {
+    const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
+
+    async function handleBuyProduct () {
+      try {
+        setIsCreatingCheckoutSession(true)
+        const reponse = await axios.post('/api/checkout', {
+            priceID: product.defaultPriceId
+        })
+
+        const {checkoutUrl} = reponse.data
+        window.location.href = checkoutUrl
+      } catch (err) {
+        
+        //conectar isso a uma feramenta de observabilidade como (Datadog / sentry)
+        setIsCreatingCheckoutSession(false)
+        alert('falha ao redirecionar ao checkout')
+      }     
+    }  
+
+    const { isFallback } = useRouter()
+    if (isFallback) {
+        return <p>Loading...</p>
+        }
+    return(
+        <ProductContainer>
+            <ImageContainer>
+                <Image src={product.imageUrl} width={520} height={480} alt="" />
+            </ImageContainer>
+
+            <ProductDetails>
+                <h1>{product.name}</h1>
+                <span>{product.price}</span>
+                <p>{product.description}</p>
+                <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>Comprar agora</button>
+            </ProductDetails>
+        </ProductContainer>
+    )
+}
+
+export const getStaticPaths: GetStaticPaths = async() => {
+    return {
+        paths: [
+            {params: {id: "prod_OFcT8N1YUwVN0t"}},
+                     
+        ],
+        fallback: true
+    }
+}
+
+export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params }) => {
+    const productId = params.id
+
+    const product = await stripe.products.retrieve(productId, {
+        expand: ['default_price']
+    })
+    const price = product.default_price as Stripe.Price
+      return {
+        props: {
+         product:   {
+                id: product.id,
+                name: product.name,
+                imageUrl: product.images[0],
+                price: new Intl.NumberFormat('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                        }).format(price.unit_amount / 100), 
+                description: product.description,
+                defaultPriceId: price.id,
+              }
+        },
+        revalidate: 60* 60 * 1 // apesar do 1 não mudar o calculo ele é interessante para a visualização rapida de quanto tempo esta se passando, se quisermos aumentar passamos ele para 2, 3 etc.
+    }
+}
+
+# voltamos para o checkout
+no priceId que estava assim:
+const priceID = 'price_1NT7EKDL4iPygGSPlKPWIQKY'
+a gente muda essa chave que estava estatica
+a gente vai pegar do req.body o priceId assim
+ const {priceID} = req.body
+
+logo abaixo a gente faz uma condição para que se a requisição for acionada sem mandar o priceID a gente vai dar uma msg de erro 400 e vamos escrever ocmo mensagem algo coo price not found.
+    if (!priceID) {
+      return res.status(400).json({ error : 'Price not found'})
+    }
+
+o next tambem permite teoricamente que o usuario acesse essa pagina usando outras formas como get ou alguma outra. para evitar que ele chegue nessa pagina por qualquer outro caminho do que pelo butão e logo pelo post a gente pode fazer uma condição assim
+se o metodo usado não for post vamos dar um erro 405 de metodo não permitido.
+    if (req.method != 'POST') {
+      return res.status(405).json({ error : 'Method not allowed'})
+    }
+
+* nos não temos nada na checkout que diga de onde vem as informações do produto. porem o stripe nos diz que podems criar uma variavel que o proprio stripe vai preencher essa variavel com o id da checkoutSessison.
+na checkout vamos enviar o successId dessa forma
+estava assim:
+const success_url = `${process.env.NEXT_URL}/success`
+
+e vamos deixar assim:
+const success_url = `${process.env.NEXT_URL}/success?session_id={CHECKOUT_SESSION_ID}`
+   
+
+ou seja enviamos um parametro de checkousessionid
+
+agora na pagina de success nos podemos usar desse parametro.
+ por conta da segurança de dados vamos usar o getserversideprops
+ nos vamos pegar o session_id do query que é o que vai ir de la do checkout e vamos renomealo para sessionId em camelcase. e vamos aproveitar para forcar que ele seja uma string, dessa forma:
+ export const getServerSideProps: GetServerSideProps = async ({query}) => {
+    const sessionId = String(query.session_id)
+
+    return {
+     props: {
+
+     }
+    }
+}
+
+agora camos buscar os dados dela usando uma cont session = await dessa forma
+const session = await stripe.checkout.sessions.retrieve(sessionId)
+assim a nossa session vai ter varias informação de la o stripe sobre essa transaçao como por exemplo se foi paga ou nao o nome do cliente, etc.
+o que não vem são os dados do produto. então para ter acesso a isso, como por exemplo a imagem da camiseta comprada nos teremos que usar o expendables. nesse caso a gente vai ter que expandir o custumer pa expandindo isso teremos acesso ao produto. apos o sessionID A Gente da uma virguma abre um objeto passa expand e passa um line_items
+const session = await stripe.checkout.sessions.retrieve(sessionId, {
+        expand: ['line-items']
+
+        o line-itens retorna para a gente um objeto com diversas coisas como nome do produto e preço, mas não retorna a imagem.
+        porem do price a gente conseuge espandir e pegar a imagem.
+        então vamos tambem expandir o line-items.data.price.product
+        tem que colocar o .data porque é um array e ai a partir desse array pegamos o price e o product
+
+     expand: ['line-items', 'line-items.data.price.product']
+    })
+  agoratemos tanto o line itens quanto o product que esta dentro dele como expandidos e agora precisamos pegar disso tudo as informações necessarias.
+  peguei o nome:
+    const custumerName = session.customer_details.name
+
+  
 
