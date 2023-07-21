@@ -1193,5 +1193,31 @@ const session = await stripe.checkout.sessions.retrieve(sessionId, {
   peguei o nome:
     const custumerName = session.customer_details.name
 
-  
+  # condições para sucesso
+  vamos tambem escrever condiçõs para se caso a session id não chegue ele faça algo porque se não vai gerar uma pagina de erro.
+  a gente pode fazer um redirecionamento do usuario por dentro da função getSideServerProps
+
+  ao fazer um  if (!query.session_id) {
+            return {
+                aqui podemos retornar vaias coisas que podemos ver com cntrl espaço. se a gente colocar notfound coo true a gente recebe o aviso de 404 erro. 
+            }
+           }
+            ùas a gente vai fazer essa verificação antes de mudar o sessionId como query.sessio_id por conta de erro de tipagem/.
+  }
+
+podemos ao inves do notFound usar o redirect. então damos um redirect: {
+  aqui tem varias opções. destination, permanetn, etc. escolhemos destination mandamos para home. e colocamos em permanente se é permanente ou não, ou seja se é um redirect 301 ou 302. no nosso caso é false porque esse redirecionaent não é permanente ele so acontece se o usuario nõa informar a session id.
+}
+
+# seo
+o next permite costomizar muitas coisas da pagina como por exemplo keywords, o titulo e icone do head, metatags tags de descrição, etc.
+a gente pode costomizar isso por pagina, e não so na pagina index.
+vamos importar head de next/head assim na  e não de next/documents
+import Head from "next/head"
+e a gentepode colocar essa tag em qualquer lugar da pagina. vamos colocar antes da homecontainer e vamos envolver a pagina or um fragments.
+e tudo que a gente colocar dentro desse head vai ser transportado para dentro do nosso document e vai ser exibido e estilizado.
+tem m plugin chamado nextSEO que podemos achar no google e ele pode construir varias meta tag para o SEO com base em nosso codigo.
+mas aqui vamos fazer simples so o title e o icon, e na pagina de success vamos adicionar a mais a meta robost
+<meta name="robots" content="noindex"/>
+essa tag funciona para o crowler não indexarem essa pagina, ela fica fora de qualquer indexação do google.
 
