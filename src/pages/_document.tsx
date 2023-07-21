@@ -1,6 +1,6 @@
 import { Html, Head, Main, NextScript } from "next/document"
 import { getCssText } from "../styles"
-import logo from '../assets/logo.svg'
+
 export default function document() {
     return (
         <Html>

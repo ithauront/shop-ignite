@@ -1221,3 +1221,7 @@ mas aqui vamos fazer simples so o title e o icon, e na pagina de success vamos a
 <meta name="robots" content="noindex"/>
 essa tag funciona para o crowler não indexarem essa pagina, ela fica fora de qualquer indexação do google.
 
+
+https://www.figma.com/file/FxlDRKOmznBbTH8DsTgnZU/Ignite-Shop-2.0-%E2%80%A2-Desafio-React/duplicate?type=design&node-id=2-12&mode=design
+
+figma para o desing

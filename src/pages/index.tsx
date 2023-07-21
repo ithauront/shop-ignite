@@ -12,6 +12,7 @@ import { GetStaticProps } from "next";
 import Stripe from "stripe";
 
 import logo from "../assets/logo.svg"
+import { Handbag } from "phosphor-react"
 
 
 interface HomeProps{
@@ -49,8 +50,12 @@ export default function Home({products}: HomeProps) {
     <Image src={product.imageUrl} alt='camiseta'  width={520} height={480} priority={true}/>
 
     <footer>
+      <div className="info">
       <strong>{product.name}</strong>
       <span>{product.price}</span>
+      </div>
+      
+      <div className="shoppingCart">< Handbag size={24}/> </div>
     </footer>
    </Product>
    </Link>
