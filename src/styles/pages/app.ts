@@ -24,7 +24,7 @@ display: 'flex',
 alignItems: 'center',
 justifyContent: 'space-between',
 
-'div': {
+'button': {
     
     width: '3rem',
     height: '3rem',

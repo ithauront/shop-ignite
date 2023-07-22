@@ -52,8 +52,8 @@ export const Product = styled('div', {
         '.info' : {
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
             flexWrap: 'no-wrap',
 
 

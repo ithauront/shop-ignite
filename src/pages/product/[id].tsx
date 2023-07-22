@@ -9,7 +9,7 @@ import axios from "axios"
 import { useState } from "react"
 import Head from "next/head"
 
-import logo from '../../assets/logo.svg'
+
 
 interface ProductProps {
     product: {
