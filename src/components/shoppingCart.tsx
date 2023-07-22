@@ -1,15 +1,16 @@
 import Image from "next/image";
 import { ImageContainer } from "../styles/pages/success";
 import image from '../assets/camisas/Camisa-Maratona 1.png'
+import { ShoppingCartContainer, ShoppingItems } from "../styles/components/shoppingCarts";
 
 export default function ShoppingCart () {
     return (
-        <div>
-            <header>
+        <ShoppingCartContainer>
+            
                 <button>X</button>
-            </header>
-            <main>
-                <p>Sacola de compras</p>
+            
+            <ShoppingItems>
+                <p className="title">Sacola de compras</p>
                 <div>
                     <div className="product">
                       <ImageContainer>
@@ -42,7 +43,7 @@ export default function ShoppingCart () {
                       </div>
                     </div>
                 </div>
-            </main>
+            </ShoppingItems>
             <footer>
                 <div className="shoppingcartTotal">
                         <section><p>Quantidade</p><p>3 itens</p></section>
@@ -50,6 +51,6 @@ export default function ShoppingCart () {
                 </div>
                 <button>Finalizar a compra</button>
             </footer>
-        </div>
+        </ ShoppingCartContainer>
     )
 }

@@ -25,7 +25,7 @@ alignItems: 'center',
 justifyContent: 'space-between',
 
 'button': {
-    
+    border: 'none',
     width: '3rem',
     height: '3rem',
 
