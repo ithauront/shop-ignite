@@ -3,46 +3,54 @@ import { styled } from "..";
 export const ShoppingCartContainer = styled('div', {
     width: '30rem',
     minHeight: '100vh',
-    margin: '0 auto',
     background: `$gray800`,
     padding: '1.5rem',
     gap:'1.5rem',
 
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-between',
 
-    '.title': {
-        marginLeft: '1.5rem',
-        fontSize: `$xl`,
-        fontWeight: 'bolder',
-    },
-    '.close-button' : {
-        marginLeft: '25rem',
-        border: 'none',
-        right: '1.5rem',
-        width: '1.5rem',
-        height: '1.5rem',
+    position:'fixed',
+    top:'0',
+    right:'0',
+    zIndex:'100',
+    overflowY:'auto',
 
-        cursor: 'pointer',
-
-        background: 'transparent',
-        color: `$gray500`,
-        fontSize: `$lg`,
-
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-
-    },
+ 
     'main': {
+      
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
         justifyContent: 'center',
-        gap: '1.25rem',
-        marginTop: '1.5rem',
+        gap: '1.5rem',
+        marginTop: '1rem',
         width: '24rem',
-        
+
+        '.close-button' : {
+            marginLeft: '25rem',
+            border: 'none',
+            right: '1.5rem',
+            width: '1.5rem',
+            height: '1.5rem',
+    
+            cursor: 'pointer',
+    
+            background: 'transparent',
+            color: `$gray500`,
+            fontSize: `$lg`,
+    
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+    
+        },
+        '.title': {
+            marginLeft: '1.5rem',
+            fontSize: `$xl`,
+            fontWeight: 'bolder',
+        },
         '.product': {
            
             display: 'flex',
@@ -52,12 +60,12 @@ export const ShoppingCartContainer = styled('div', {
             gap: '1.25rem',
 
             width: '24rem',
-        '.imageContainer':{
+       
+            '.imageContainer':{
             width: '6.375rem',
             height: '5.81rem'
         },
            
-
             '.productInfo': {
             
                 display: 'flex',
@@ -70,15 +78,12 @@ export const ShoppingCartContainer = styled('div', {
         
                 'p': {
                     fontSize: `$md`,
-                   
                     fontwheight: 'regular',
                     color: `$gray300`,
-        
                 },
         
                 'strong': {
                     fontSize: `$md`,
-                   
                     fontwheight: 'bold',
                     color: `$gray100`,
                 },
@@ -96,19 +101,22 @@ export const ShoppingCartContainer = styled('div', {
     
 
     'footer': {
+      
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        marginTop:'10rem',
+        gap: '3.5rem',
         
-
         '.shoppingCartTotal': {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
             width: '24rem',
             'section': {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '1rem',
 
                 'p': {
                     fontSize: `$md`,
@@ -155,44 +163,3 @@ export const ShoppingCartContainer = styled('div', {
     },
 })
 
-export const ShoppingCartItems = styled('div', {
-
-    '.product': {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        gap: '1.25rem',
-    
-        '.productInfo': {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: '0.5rem',
-    
-            'p': {
-                fontSize: `$md`,
-               
-                fontwheight: 'regular',
-                color: `$gray300`,
-    
-            },
-    
-            'strong': {
-                fontSize: `$md`,
-           
-                fontwheight: 'bold',
-                color: `$gray100`,
-            },
-    
-            'button': {
-            cursor: 'pointer',
-            border: 'none',
-            background: 'transparent',
-            boxSizing: 'border-box',
-            color: `$green300`
-            },
-        }
-    }
-    
-})
