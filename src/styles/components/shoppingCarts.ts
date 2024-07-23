@@ -5,12 +5,19 @@ export const ShoppingCartContainer = styled('div', {
     minHeight: '100vh',
     margin: '0 auto',
     background: `$gray800`,
-    
+    padding: '1.5rem',
+    gap:'1.5rem',
 
     display: 'flex',
     flexDirection: 'column',
 
-    'button' : {
+    '.title': {
+        marginLeft: '1.5rem',
+        fontSize: `$xl`,
+        fontWeight: 'bolder',
+    },
+    '.close-button' : {
+        marginLeft: '25rem',
         border: 'none',
         right: '1.5rem',
         width: '1.5rem',
@@ -20,6 +27,7 @@ export const ShoppingCartContainer = styled('div', {
 
         background: 'transparent',
         color: `$gray500`,
+        fontSize: `$lg`,
 
         display: 'flex',
         justifyContent: 'center',
@@ -31,28 +39,38 @@ export const ShoppingCartContainer = styled('div', {
         flexDirection: 'column',
         alignItems: 'flex-start',
         justifyContent: 'center',
-
+        gap: '1.25rem',
+        marginTop: '1.5rem',
+        width: '24rem',
+        
         '.product': {
+           
             display: 'flex',
-          
+            flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
             gap: '1.25rem',
 
             width: '24rem',
-            height: '5.875rem',
+        '.imageContainer':{
+            width: '6.375rem',
+            height: '5.81rem'
+        },
+           
 
             '.productInfo': {
+            
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',
                 justifyContent: 'space-between',
                 gap: '0.5rem',
-
+               
+                height: '5.875rem',
         
                 'p': {
                     fontSize: `$md`,
-                    lineHeight: 160,
+                   
                     fontwheight: 'regular',
                     color: `$gray300`,
         
@@ -60,7 +78,7 @@ export const ShoppingCartContainer = styled('div', {
         
                 'strong': {
                     fontSize: `$md`,
-                    lineHeight: 160,
+                   
                     fontwheight: 'bold',
                     color: `$gray100`,
                 },
@@ -94,7 +112,7 @@ export const ShoppingCartContainer = styled('div', {
 
                 'p': {
                     fontSize: `$md`,
-                    lineHeight: 160,
+                   
                     fontwheight: 'regular',
                     color: `$gray300`,
         
@@ -102,7 +120,7 @@ export const ShoppingCartContainer = styled('div', {
         
                 'strong': {
                     fontSize: `$lg`,
-                    lineHeight: 160,
+                    
                     fontwheight: 'bold',
                     color: `$gray100`,
 
@@ -154,7 +172,7 @@ export const ShoppingCartItems = styled('div', {
     
             'p': {
                 fontSize: `$md`,
-                lineHeight: 160,
+               
                 fontwheight: 'regular',
                 color: `$gray300`,
     
@@ -162,7 +180,7 @@ export const ShoppingCartItems = styled('div', {
     
             'strong': {
                 fontSize: `$md`,
-                lineHeight: 160,
+           
                 fontwheight: 'bold',
                 color: `$gray100`,
             },
