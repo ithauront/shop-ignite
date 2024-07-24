@@ -5,7 +5,7 @@ import { ShoppingCartContainer } from "../styles/components/shoppingCarts";
 import { useCart } from "../context/cartContext";
 
 export default function ShoppingCart({ onClose }) {
-  const { cartItems, removeFromCart } = useCart()
+  const { cartItems, removeFromCart, totalCartItems } = useCart()
   const totalPrice = cartItems.reduce((acc, item) => {
     return acc + (parseFloat(item.price.replace('R$', '').replace(',', '.')) * item.quantity)
   }, 0)
@@ -14,6 +14,7 @@ export default function ShoppingCart({ onClose }) {
     style: 'currency',
     currency: 'BRL'
   }).format(totalPrice);
+
 
   return (
     <ShoppingCartContainer>
@@ -39,7 +40,7 @@ export default function ShoppingCart({ onClose }) {
 
       <footer>
         <div className="shoppingCartTotal">
-          <section><p>Quantidade</p><p>{cartItems.length} itens</p></section>
+          <section><p>Quantidade</p><p>{totalCartItems} itens</p></section>
           <section><strong>Valor total</strong><strong className="price">{formattedTotal}</strong></section>
         </div>
         <button>Finalizar a compra</button>

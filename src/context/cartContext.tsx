@@ -15,12 +15,14 @@ type CartContextType = {
     cartItems: CartItem[];
     addToCart: (product: Product) => void;
     removeFromCart: (productId: string) => void;
+    totalCartItems: number
 }
 
 const cartContextDefaultValues: CartContextType = {
     cartItems: [],
     addToCart: () => { },
-    removeFromCart: () => { }
+    removeFromCart: () => { },
+    totalCartItems: 0
 };
 
 const CartContext = createContext<CartContextType>(cartContextDefaultValues);
@@ -57,9 +59,12 @@ export const CartProvider = ({ children }) => {
             }, [])
         );
     };
+    const totalCartItems = cartItems.reduce((acc, item) => {
+        return acc + item.quantity
+    }, 0)
 
     return (
-        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
+        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, totalCartItems }}>
             {children}
         </CartContext.Provider>
     );

@@ -52,11 +52,8 @@ export const ShoppingCartContainer = styled('div', {
             fontWeight: 'bolder',
         },
         '.product': {
-           
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
             gap: '1.25rem',
 
             width: '24rem',
