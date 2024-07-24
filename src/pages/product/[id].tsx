@@ -11,94 +11,94 @@ import Head from "next/head"
 
 
 
-interface ProductProps {
+export interface ProductProps {
     product: {
-    id: string;
-    name: string;
-    imageUrl: string;
-    price: string;
-    description: string;
-    defaultPriceId: string;
+        id: string;
+        name: string;
+        imageUrl: string;
+        price: string;
+        description: string;
+        defaultPriceId: string;
     }
 }
 
-export default function Products({product}: ProductProps) {
+export default function Products({ product }: ProductProps) {
     const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
 
-    async function handleBuyProduct () {
-      try {
-        setIsCreatingCheckoutSession(true)
-        const reponse = await axios.post('/api/checkout', {
-            priceID: product.defaultPriceId
-        })
+    async function handleBuyProduct() {
+        try {
+            setIsCreatingCheckoutSession(true)
+            const reponse = await axios.post('/api/checkout', {
+                priceID: product.defaultPriceId
+            })
 
-        const {checkoutUrl} = reponse.data
-        window.location.href = checkoutUrl
-      } catch (err) {
-        
-        //conectar isso a uma feramenta de observabilidade como (Datadog / sentry)
-        setIsCreatingCheckoutSession(false)
-        alert('falha ao redirecionar ao checkout')
-      }     
-    }  
+            const { checkoutUrl } = reponse.data
+            window.location.href = checkoutUrl
+        } catch (err) {
+
+            //conectar isso a uma feramenta de observabilidade como (Datadog / sentry)
+            setIsCreatingCheckoutSession(false)
+            alert('falha ao redirecionar ao checkout')
+        }
+    }
 
     const { isFallback } = useRouter()
     if (isFallback) {
         return <p>Loading...</p>
-        }
-    return(
+    }
+    return (
         <>
-    <Head>
-      <title>{product.name} | Ignite Shop</title>
-     
-    </Head>
-            <ProductContainer>
-            <ImageContainer>
-                <Image src={product.imageUrl} width={520} height={480} alt="" />
-            </ImageContainer>
+            <Head>
+                <title>{product.name} | Ignite Shop</title>
 
-            <ProductDetails>
-                <h1>{product.name}</h1>
-                <span>{product.price}</span>
-                <p>{product.description}</p>
-                <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>Comprar agora</button>
-            </ProductDetails>
-        </ProductContainer>
+            </Head>
+            <ProductContainer>
+                <ImageContainer>
+                    <Image src={product.imageUrl} width={520} height={480} alt="" />
+                </ImageContainer>
+
+                <ProductDetails>
+                    <h1>{product.name}</h1>
+                    <span>{product.price}</span>
+                    <p>{product.description}</p>
+                    <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>Comprar agora</button>
+                </ProductDetails>
+            </ProductContainer>
         </>
     )
 }
 
-export const getStaticPaths: GetStaticPaths = async() => {
+export const getStaticPaths: GetStaticPaths = async () => {
     return {
         paths: [
-            {params: {id: "prod_OFcT8N1YUwVN0t"}},
-                     
+            { params: { id: "prod_OFcT8N1YUwVN0t" } },
+
         ],
         fallback: true
     }
 }
 
-export const getStaticProps: GetStaticProps<any, {id: string}> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ params }) => {
     const productId = params.id
 
     const product = await stripe.products.retrieve(productId, {
         expand: ['default_price']
     })
     const price = product.default_price as Stripe.Price
-      return {
+    return {
         props: {
-         product:   {
+            product: {
                 id: product.id,
                 name: product.name,
                 imageUrl: product.images[0],
                 price: new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                        }).format(price.unit_amount / 100), 
+                    style: 'currency',
+                    currency: 'BRL',
+                }).format(price.unit_amount / 100),
                 description: product.description,
                 defaultPriceId: price.id,
-              }
+            }
         },
-        revalidate: 60* 60 * 1 // apesar do 1 não mudar o calculo ele é interessante para a visualização rapida de quanto tempo esta se passando, se quisermos aumentar passamos ele para 2, 3 etc.
+        revalidate: 60 * 60 * 1 // apesar do 1 não mudar o calculo ele é interessante para a visualização rapida de quanto tempo esta se passando, se quisermos aumentar passamos ele para 2, 3 etc.
     }
 }

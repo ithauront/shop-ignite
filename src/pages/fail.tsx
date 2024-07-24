@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ImageContainer, SuccessContainer } from "../styles/pages/success";
-
 import Head from "next/head";
 import { WarningOctagon } from "phosphor-react";
 
@@ -8,28 +7,28 @@ import { WarningOctagon } from "phosphor-react";
 
 
 export default function Success() {
-    return(
+    return (
         <>
-<Head>
-  <title>Erro | Ignite Shop</title>
+            <Head>
+                <title>Erro | Ignite Shop</title>
 
-  <meta name="robots" content="noindex"/>
-</Head>
-        
-        <SuccessContainer>
-            <h1>Erro</h1>
-            <ImageContainer>
-               <WarningOctagon size={50}/>
-            </ImageContainer>
+                <meta name="robots" content="noindex" />
+            </Head>
 
-            <p>
-                Ops, infelizmente houve um erro no seu pedido. Por favor entre em contato conosco para que possamos reslver o problema.
-            </p>
+            <SuccessContainer>
+                <h1>Erro</h1>
+                <ImageContainer>
+                    <WarningOctagon size={50} />
+                </ImageContainer>
 
-            <Link href="/">
-                Voltar ao catalogo
-            </Link>
-        </SuccessContainer>
+                <p>
+                    Ops, infelizmente houve um erro no seu pedido. Por favor entre em contato conosco para que possamos reslver o problema.
+                </p>
+
+                <Link href="/">
+                    Voltar ao catalogo
+                </Link>
+            </SuccessContainer>
         </>
     )
 }

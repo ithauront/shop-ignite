@@ -9,6 +9,7 @@ import { GetStaticProps } from "next";
 import Stripe from "stripe";
 import logo from "../assets/logo.svg"
 import { Handbag } from "phosphor-react"
+import { useCart } from "../context/cartContext"
 
 
 interface HomeProps {
@@ -21,7 +22,7 @@ interface HomeProps {
 }
 
 export default function Home({ products }: HomeProps) {
-
+  const { addToCart } = useCart()
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 2,
@@ -51,7 +52,7 @@ export default function Home({ products }: HomeProps) {
                     <span>{product.price}</span>
                   </div>
 
-                  <div className="shoppingCart">< Handbag size={24} /> </div>
+                  <div onClick={() => addToCart(product)} className="shoppingCart">< Handbag size={24} /> </div>
                 </footer>
               </Product>
             </Link>
