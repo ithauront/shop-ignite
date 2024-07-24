@@ -42,10 +42,12 @@ export default function Home({ products }: HomeProps) {
 
         {products.map(product => {
           return (
-            <Link href={`/product/${product.id}`} key={product.id} prefetch={false} >
+            <>
               <Product className="keen-slider__slide">
-                <Image src={product.imageUrl} alt='camiseta' width={520} height={480} priority={true} />
+                <Link href={`/product/${product.id}`} key={product.id} prefetch={false} >
 
+                  <Image src={product.imageUrl} alt='camiseta' width={520} height={480} priority={true} />
+                </Link>
                 <footer>
                   <div className="info">
                     <strong>{product.name}</strong>
@@ -55,7 +57,7 @@ export default function Home({ products }: HomeProps) {
                   <div onClick={() => addToCart(product)} className="shoppingCart">< Handbag size={24} /> </div>
                 </footer>
               </Product>
-            </Link>
+            </>
           )
 
         })}

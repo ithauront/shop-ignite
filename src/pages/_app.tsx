@@ -7,6 +7,7 @@ import ShoppingCart from '../components/shoppingCart'
 import { Handbag } from "phosphor-react";
 import { useState } from "react";
 import { CartProvider } from "../context/cartContext";
+import Link from "next/link";
 
 export default function App({ Component, pageProps }: AppProps) {
   globalStyles()
@@ -21,7 +22,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <CartProvider>
       <Container>
         <Header>
-          <Image src={logo} alt="logo" />
+          <Link href={`/`} prefetch={false} >
+            <Image src={logo} alt="logo" />
+          </Link >
           <button onClick={handleShoppingCartClick}>< Handbag size={24} /> </button>
         </Header>
         {showShoppingCart && <ShoppingCart onClose={handleShoppingCartClick} />}
