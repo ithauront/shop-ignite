@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { ImageContainer } from "../styles/pages/success";
-import image from '../assets/camisas/Camisa-Maratona 1.png'
 import { ShoppingCartContainer } from "../styles/components/shoppingCarts";
 import { useCart } from "../context/cartContext";
+import axios from "axios";
 
 export default function ShoppingCart({ onClose }) {
   const { cartItems, removeFromCart, totalCartItems } = useCart()
@@ -15,7 +15,21 @@ export default function ShoppingCart({ onClose }) {
     currency: 'BRL'
   }).format(totalPrice);
 
-
+  async function finalizePurchase(cartItems) {
+    try {
+      const items = cartItems.map(item => ({
+        priceID: item.defaultPriceId,
+        quantity: item.quantity
+      }))
+      const response = await axios.post('/api/checkout', { items })
+      if (response.data.checkoutUrl) {
+        window.location.href = response.data.checkoutUrl;
+      }
+    } catch (error) {
+      console.error("Error creating checkout session", error);
+      alert("Failed to initiate checkout process");
+    }
+  }
   return (
     <ShoppingCartContainer>
 
@@ -43,7 +57,7 @@ export default function ShoppingCart({ onClose }) {
           <section><p>Quantidade</p><p>{totalCartItems} itens</p></section>
           <section><strong>Valor total</strong><strong className="price">{formattedTotal}</strong></section>
         </div>
-        <button>Finalizar a compra</button>
+        <button onClick={() => finalizePurchase(cartItems)}>Finalizar a compra</button>
       </footer>
     </ ShoppingCartContainer>
   )

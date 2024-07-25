@@ -7,7 +7,6 @@ import 'keen-slider/keen-slider.min.css';
 import { stripe } from "../lib/stripe";
 import { GetStaticProps } from "next";
 import Stripe from "stripe";
-import logo from "../assets/logo.svg"
 import { Handbag } from "phosphor-react"
 import { useCart } from "../context/cartContext"
 
@@ -18,6 +17,7 @@ interface HomeProps {
     name: string;
     imageUrl: string;
     price: string;
+    defaultPriceId: string;
   }[]
 }
 
@@ -43,9 +43,8 @@ export default function Home({ products }: HomeProps) {
         {products.map(product => {
           return (
             <>
-              <Product className="keen-slider__slide">
+              <Product key={product.id} className="keen-slider__slide">
                 <Link href={`/product/${product.id}`} key={product.id} prefetch={false} >
-
                   <Image src={product.imageUrl} alt='camiseta' width={520} height={480} priority={true} />
                 </Link>
                 <footer>
@@ -81,6 +80,7 @@ export const getStaticProps: GetStaticProps = async () => {
         style: 'currency',
         currency: 'BRL',
       }).format(price.unit_amount / 100),
+      defaultPriceId: price.id
     }
   })
   return {

@@ -2,7 +2,6 @@ import { useRouter } from "next/router"
 import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
 import Image from "next/image"
 import { GetStaticPaths, GetStaticProps } from "next"
-
 import { stripe } from "../../lib/stripe"
 import Stripe from "stripe"
 import axios from "axios"
@@ -29,7 +28,7 @@ export default function Products({ product }: ProductProps) {
         try {
             setIsCreatingCheckoutSession(true)
             const reponse = await axios.post('/api/checkout', {
-                priceID: product.defaultPriceId
+                items: [{ priceID: product.defaultPriceId, quantity: 1 }]
             })
 
             const { checkoutUrl } = reponse.data
