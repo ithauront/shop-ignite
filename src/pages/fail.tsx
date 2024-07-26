@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ImageContainer, SuccessContainer } from "../styles/pages/success";
+import { ImageContainerSuccess, SuccessContainer } from "../styles/pages/success";
 import Head from "next/head";
 import { WarningOctagon } from "phosphor-react";
 
@@ -17,9 +17,9 @@ export default function Success() {
 
             <SuccessContainer>
                 <h1>Erro</h1>
-                <ImageContainer>
+                <ImageContainerSuccess>
                     <WarningOctagon size={50} />
-                </ImageContainer>
+                </ImageContainerSuccess>
 
                 <p>
                     Ops, infelizmente houve um erro no seu pedido. Por favor entre em contato conosco para que possamos reslver o problema.

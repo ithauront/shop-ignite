@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ImageContainer, SuccessContainer } from "../styles/pages/success";
+import { ImageContainerSuccess, SuccessContainer } from "../styles/pages/success";
 import { GetServerSideProps } from "next";
 import { stripe } from "../lib/stripe";
 import Stripe from "stripe";
@@ -10,32 +10,36 @@ import Head from "next/head";
 
 interface SuccessProps {
     customerName: string;
-    product: {
+    totalItems: number;
+    products: {
         name: string;
         imageUrl: string;
-    }
-
+    }[]
 }
 
-export default function Success({ customerName, product }: SuccessProps) {
+export default function Success({ customerName, products, totalItems }: SuccessProps) {
+
     return (
         <>
             <Head>
                 <title>Compra efetuada | Ignite Shop</title>
-
                 <meta name="robots" content="noindex" />
             </Head>
 
             <SuccessContainer>
+                <div className="image-array-container">
+                    {products.map((product, index) => (
+                        <ImageContainerSuccess key={index}>
+                            <Image src={product.imageUrl} alt={product.name} width={120} height={110} />
+                        </ImageContainerSuccess>
+                    ))}
+                </div>
                 <h1>Compra efetuada!</h1>
-                <ImageContainer>
-                    <Image src={product.imageUrl} alt='product image' width={120} height={110} />
-                </ImageContainer>
-
                 <p>
-                    Uhull <strong>{customerName}</strong>, sua Camiseta <strong>{product.name}</strong> ja esta à caminho da sua casa.
+                    Uhull <strong>{customerName}</strong>, sua compra de
+                    {products.length > 1 ? ` ${totalItems} camisetas já está a caminho da sua casa.` :
+                        ` a camiseta ${products[0].name} já está a caminho da sua casa.`}
                 </p>
-
                 <Link href="/">
                     Voltar ao catalogo
                 </Link>
@@ -62,16 +66,19 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
     const customerName = session.customer_details.name
 
-    const product = session.line_items.data[0].price.product as Stripe.Product
+    const products = session.line_items.data.map(item => ({
+        name: (item.price.product as Stripe.Product).name,
+        imageUrl: (item.price.product as Stripe.Product).images[0],
+        quantity: item.quantity,
+    }))
+
+    const totalItems = products.reduce((acc, item) => acc + item.quantity, 0)
 
     return {
         props: {
             customerName,
-            product: {
-                name: product.name,
-                imageUrl: product.images[0]
-            }
-
+            products,
+            totalItems
         }
     }
 }

@@ -16,7 +16,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const cancel_url = `${process.env.NEXT_URL}/cancel?session_id={CHECKOUT_SESSION_ID}`;
 
     try {
-      console.log('items:', items)
         const checkoutSession = await stripe.checkout.sessions.create({
             line_items: items.map(item => ({
                 price: item.priceID, 

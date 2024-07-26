@@ -1,5 +1,6 @@
 import { styled } from "..";
 
+
 export const ShoppingCartContainer = styled('div', {
     width: '30rem',
     minHeight: '100vh',
@@ -17,6 +18,7 @@ export const ShoppingCartContainer = styled('div', {
     zIndex:'100',
     overflowY:'auto',
 
+    
  
     'main': {
       
@@ -158,5 +160,23 @@ export const ShoppingCartContainer = styled('div', {
 
         },
     },
-})
+    
+}
+)
 
+export const ImageContainer = styled('div', {
+    width: '100%',
+    maxWidth: 130,
+    height: 145,
+    background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
+    borderRadius: 8,
+    padding: '0.25rem',
+
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+
+    img : {
+        objectFit: 'cover',
+    }})

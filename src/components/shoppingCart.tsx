@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ImageContainer } from "../styles/pages/success";
+import { ImageContainer } from "../styles/components/shoppingCarts";
 import { ShoppingCartContainer } from "../styles/components/shoppingCarts";
 import { useCart } from "../context/cartContext";
 import axios from "axios";
