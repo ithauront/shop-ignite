@@ -18,7 +18,7 @@ export default function Success() {
             <SuccessContainer>
                 <h1>Erro</h1>
                 <ImageContainerSuccess>
-                    <WarningOctagon size={50} />
+                    <WarningOctagon size={120} />
                 </ImageContainerSuccess>
 
                 <p>

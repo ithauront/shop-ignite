@@ -42,5 +42,9 @@ export const HeaderContainer = styled('header', {
         borderRadius: '50%',
         padding: '2px 6px',
         fontSize: '12px',
-      }
+      },
+      // I made a contidional class to alter the justify contntent to center on the success or fail page.
+      '&.isInSuccessOrFail': {
+        justifyContent: 'center',
+    }
     })
