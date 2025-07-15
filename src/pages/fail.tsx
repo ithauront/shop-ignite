@@ -6,7 +6,7 @@ import { WarningOctagon } from "phosphor-react";
 
 
 
-export default function Success() {
+export default function Fail() {
     return (
         <>
             <Head>

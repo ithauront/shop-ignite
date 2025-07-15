@@ -59,20 +59,24 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     }
     const sessionId = String(query.session_id)
 
-
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    try{
+         const session = await stripe.checkout.sessions.retrieve(sessionId, {
         expand: ['line_items', 'line_items.data.price.product']
     })
 
-    const customerName = session.customer_details.name
+     const customerName = session.customer_details.name
 
-    const products = session.line_items.data.map(item => ({
-        name: (item.price.product as Stripe.Product).name,
-        imageUrl: (item.price.product as Stripe.Product).images[0],
-        quantity: item.quantity,
-    }))
+   const products = session.line_items?.data.map(item => {
+      const product = item.price.product as Stripe.Product;
 
-    const totalItems = products.reduce((acc, item) => acc + item.quantity, 0)
+      return {
+        name: product.name,
+        imageUrl: product.images?.[0] ?? '/fallback-image.png',
+        quantity: item.quantity ?? 1,
+      };
+    }) ?? [];
+
+       const totalItems = products.reduce((acc, item) => acc + item.quantity, 0)
 
     return {
         props: {
@@ -81,4 +85,15 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
             totalItems
         }
     }
+    
+    } catch (err) {
+
+    return {
+      redirect: {
+        destination: '/fail',
+        permanent: false,
+      },
+    };
+  }
+ 
 }
