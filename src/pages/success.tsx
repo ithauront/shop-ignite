@@ -48,55 +48,60 @@ export default function Success({ customerName, products, totalItems }: SuccessP
         </>
     )
 }
-
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-    if (!query.session_id) {
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false,
-            }
-        }
-    }
-    const sessionId = String(query.session_id)
+  const sessionId = String(query.session_id)
 
-    try{
-         const session = await stripe.checkout.sessions.retrieve(sessionId, {
-        expand: ['line_items', 'line_items.data.price.product']
+  if (!sessionId) {
+    console.warn('[Stripe] session_id não encontrado na query.')
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  try {
+    console.log('[Stripe] Recuperando sessão', sessionId)
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['line_items', 'line_items.data.price.product']
     })
 
-     const customerName = session.customer_details?.name ?? 'Cliente';
+    console.log('[Stripe] Sessão recuperada:', session.id)
 
-      const products = session.line_items?.data.map(item => {
-      const product = item.price.product as Stripe.Product;
+    const customerName = session.customer_details?.name ?? 'Cliente'
 
-      
+    const products = session.line_items?.data.map(item => {
+      const product = item.price.product as Stripe.Product
 
       return {
         name: product.name,
         imageUrl: product.images?.[0] ?? '/fallback-image.png',
         quantity: item.quantity ?? 1,
-      };
-    }) ?? [];
+      }
+    }) ?? []
 
-       const totalItems = products.reduce((acc, item) => acc + item.quantity, 0)
+    const totalItems = products.reduce((acc, item) => acc + item.quantity, 0)
+
+    console.log('[Stripe] Produtos recuperados:', products)
 
     return {
-        props: {
-            customerName,
-            products,
-            totalItems
-        }
+      props: {
+        customerName,
+        products,
+        totalItems
+      }
     }
-    
-    } catch (err) {
+
+  } catch (err) {
+    console.error('[Stripe] Erro ao recuperar sessão:', err)
 
     return {
       redirect: {
         destination: '/fail',
         permanent: false,
       },
-    };
+    }
   }
- 
 }
