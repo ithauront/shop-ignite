@@ -62,13 +62,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   }
 
   try {
-    console.log('[Stripe] Recuperando sessão', sessionId)
 
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ['line_items', 'line_items.data.price.product']
     })
 
-    console.log('[Stripe] Sessão recuperada:', session.id)
 
     const customerName = session.customer_details?.name ?? 'Cliente'
 
@@ -84,7 +82,6 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
     const totalItems = products.reduce((acc, item) => acc + item.quantity, 0)
 
-    console.log('[Stripe] Produtos recuperados:', products)
 
     return {
       props: {
