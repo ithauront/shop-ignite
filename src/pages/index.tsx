@@ -7,8 +7,8 @@ import 'keen-slider/keen-slider.min.css';
 import { stripe } from "../lib/stripe";
 import { GetStaticProps } from "next";
 import Stripe from "stripe";
-import { Handbag } from "phosphor-react"
 import { useCart } from "../context/cartContext"
+import dynamic from 'next/dynamic'
 
 
 interface HomeProps {
@@ -29,7 +29,10 @@ export default function Home({ products }: HomeProps) {
       spacing: 48,
     },
   })
-
+    const Handbag = dynamic(
+  () => import('phosphor-react').then((mod) => mod.Handbag),
+  { ssr: false }
+)
   return (
     <>
       <Head>

@@ -1,17 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Handbag } from "phosphor-react";
 import { useCart } from "../context/cartContext";
 import { HeaderContainer } from '../styles/components/header';
 import logo from '../assets/logo.svg'
 import { useRouter } from "next/router";
-
-
+import dynamic from 'next/dynamic'
 
 function Header({ onShoppingCartClick }) {
     const { totalCartItems } = useCart()
     const router = useRouter()
     const isInSuccessOrFail = router.pathname === '/success' || router.pathname === '/fail'
+    const Handbag = dynamic(
+  () => import('phosphor-react').then((mod) => mod.Handbag),
+  { ssr: false }
+)
 
     return (
         <HeaderContainer className={isInSuccessOrFail ? 'isInSuccessOrFail' : ''}>
