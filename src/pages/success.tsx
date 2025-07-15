@@ -9,12 +9,13 @@ import Head from "next/head";
 
 
 interface SuccessProps {
-    customerName: string;
-    totalItems: number;
-    products: {
-        name: string;
-        imageUrl: string;
-    }[]
+  customerName: string;
+  totalItems: number;
+  products: {
+    name: string;
+    imageUrl: string;
+    quantity: number;
+  }[];
 }
 
 export default function Success({ customerName, products, totalItems }: SuccessProps) {
@@ -64,10 +65,12 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
         expand: ['line_items', 'line_items.data.price.product']
     })
 
-     const customerName = session.customer_details.name
+     const customerName = session.customer_details?.name ?? 'Cliente';
 
-   const products = session.line_items?.data.map(item => {
+      const products = session.line_items?.data.map(item => {
       const product = item.price.product as Stripe.Product;
+
+      
 
       return {
         name: product.name,
