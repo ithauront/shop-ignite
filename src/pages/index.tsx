@@ -56,7 +56,7 @@ export default function Home({ products }: HomeProps) {
                     <span>{product.price}</span>
                   </div>
 
-                  <div onClick={() => addToCart(product)} className="shoppingCart">< Handbag size={24} /> </div>
+                  <div  className="shoppingCart">< Handbag size={24} /> </div>
                 </footer>
               </Product>
             </>
