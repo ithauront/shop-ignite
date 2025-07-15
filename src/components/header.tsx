@@ -23,7 +23,7 @@ function Header({ onShoppingCartClick }) {
             {!isInSuccessOrFail && (
                 <div className='cartIconWrapper'>
                     <button onClick={onShoppingCartClick}>
-                        <Handbag size={24} />
+                        x
                         {totalCartItems > 0 && (
                             <span className='cartItemCount'>{totalCartItems}</span>
                         )}
