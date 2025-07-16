@@ -14,19 +14,19 @@ Note that in most error scenarios, Stripe itself prevents the checkout from comp
 
 ## ✨ Features
 
-    🧾 Product catalog fetched from Stripe
+   🧾 Product catalog fetched from Stripe
 
-    🛍️ Shopping cart with quantity control (React Context API)
+   🛍️ Shopping cart with quantity control (React Context API)
 
-    💳 Checkout integration with Stripe Checkout
+   💳 Checkout integration with Stripe Checkout
 
-    🧠 Static generation (getStaticProps, getStaticPaths) and SSR (getServerSideProps)
+   🧠 Static generation (getStaticProps, getStaticPaths) and SSR (getServerSideProps)
 
-    ✅ Success and fail pages for purchases
+   ✅ Success and fail pages for purchases
 
-    📦 Responsive layout and optimized images with next/image
+   📦 Responsive layout and optimized images with next/image
 
-    🔐 Mock payments using Stripe's
+   🔐 Mock payments using Stripe's
 
 ## 🧱 Tech Stack
 
@@ -81,8 +81,11 @@ Access at ```http://localhost:3000```
 Use Stripe's test cards during checkout:
 
 Card number: 4242 4242 4242 4242
+
 Expiry: any future date
+
 CVC: any 3 digits
+
 ZIP: any 5 digits
 
 
