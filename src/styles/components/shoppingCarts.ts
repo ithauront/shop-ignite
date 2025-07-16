@@ -14,7 +14,7 @@ export const ShoppingCartContainer = styled('div', {
 
     position:'fixed',
     top:'0',
-    right:'0',
+    left:'0',
     zIndex:'100',
     overflowY:'auto',
 
@@ -160,6 +160,34 @@ export const ShoppingCartContainer = styled('div', {
 
         },
     },
+
+    '@media (max-width: 768px)': {
+    width: '100vw',
+    padding: '4rem 1rem',
+
+    main: {
+      width: '100%',
+
+      '.close-button': {
+        marginLeft: 'auto',
+      },
+
+      '.product': {
+        width: '100%',
+        flexWrap: 'wrap',
+      },
+    },
+
+    footer: {
+      '.shoppingCartTotal': {
+        width: '100%',
+      },
+
+      'button': {
+        width: '100%',
+      },
+    },
+  },
     
 }
 )

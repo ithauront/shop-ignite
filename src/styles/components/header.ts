@@ -10,6 +10,10 @@ export const HeaderContainer = styled('header', {
     alignItems: 'center',
     justifyContent: 'space-between',
 
+      '@media(max-width: 768px)': {
+  
+      padding: '2rem'
+  },
  
     
     'button': {

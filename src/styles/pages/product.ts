@@ -6,7 +6,14 @@ gridTemplateColumns: '1fr 1fr',
 alignItems: 'stretch',
 gap: '4rem',
 maxWidth: 1180,
+width: '100%',
 margin: '0 auto',
+
+  '@media(max-width: 768px)': {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '2rem',
+  },
 })
 
 export const ImageContainer = styled('div',{
@@ -23,12 +30,19 @@ export const ImageContainer = styled('div',{
 
     img: {
         objectFit: 'cover',
-    }
+    },
+
+  
 })
 
 export const ProductDetails = styled('div',{
     display: 'flex',
     flexDirection: 'column',
+
+     '@media(max-width: 768px)': {
+            alignItems: "center",
+            justifyContent: 'center'
+         },
 
     h1: {
         fontSize: '$2xl',
@@ -59,6 +73,10 @@ export const ProductDetails = styled('div',{
         cursor: 'pointer',
         fontWeight: 'bold',
         fontSize: '$md',
+
+        '@media(max-width: 768px)': {
+             width: '70%'
+         },
 
         '&:disabled': {
             opacity: 0.6,
